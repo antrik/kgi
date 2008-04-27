@@ -1,0 +1,91 @@
+MAKEFILE=Makefile.tmp
+NEWMAKEFILE=Makefile
+SYSTEM=$(uname -s)
+
+TARGETOBJS=""
+TARGETMODS=""
+
+addobjs(){
+  TARGETOBJS="$TARGETOBJS $1"
+}
+
+addmods(){
+  TARGETMODS="$TARGETMODS $1"
+}
+
+init(){
+  echo include rules.mak >$MAKEFILE
+  echo include $SYSTEM.mak >>$MAKEFILE
+}
+
+fini(){
+  echo OBJS += $TARGETOBJS >> $MAKEFILE
+  echo MODS += $TARGETMODS >> $MAKEFILE
+  echo everything: \${OBJS} \${MODS} >> $MAKEFILE
+  mv $MAKEFILE $NEWMAKEFILE
+}
+
+clock(){
+#$1 = bind -> -bind/-meta tuple
+#   = spec -> spec file
+#$2 = Vendor
+#$3 = Model
+#$4 = Additional files (for bind type)
+  if test "x$1" = "xbind"; then
+    echo clock/$2/$3.o: clock/$2/$3-bind.o clock/$2/$3-meta.o $4 >> $MAKEFILE
+    addobjs "clock/$2/$3.o clock/$2/$3-bind.o clock/$2/$3-meta.o $4"
+  fi
+  if test "x$1" = "xspec"; then
+    echo clock/$2/$3.o: clock/$2/$3-fixed.o clock/fixed-meta.o >> $MAKEFILE
+    addobjs "clock/$2/$3.o clock/$2/$3-fixed.o clock/fixed-meta.o"
+  fi
+}
+
+ramdac(){
+#$1 = Vendor
+#$2 = Model
+#$3 = Additional files (for bind type)
+  echo ramdac/$1/$2.o: ramdac/$1/$2-bind.o ramdac/$1/$2-meta.o $3 >> $MAKEFILE
+  addobjs "ramdac/$1/$2.o ramdac/$1/$2-bind.o ramdac/$1/$2-meta.o $3"
+}
+
+chipset(){
+#$1 = Vendor
+#$2 = Model
+#$3 = Additional files (for bind type)
+  echo chipset/$1/$2.o: chipset/$1/$2-bind.o chipset/$1/$2-meta.o $3 >> $MAKEFILE
+  addobjs "chipset/$1/$2.o chipset/$1/$2-bind.o chipset/$1/$2-meta.o $3"
+}
+
+board(){
+#$1 = Vendor
+#$2 = Model
+  DRIVERS=$( grep "Driver(.*)" board/$1/$2.spec |sed "s|.*(\(.*\),[ 	]*\(.*\),.*).*|\1/\2.o|g" )
+  echo board/$1/$2.ko: board/$1/$2-board.o $DRIVERS >> $MAKEFILE
+  addobjs "board/$1/$2.ko board/$1/$2-board.o $DRIVERS"
+  addmods "board/$1/$2.ko"
+}
+
+monitor(){
+#$1 = bind -> -bind/-meta tuple
+#   = spec -> spec file
+#   = timings -> .t -> -timings.c -> ...
+#$2 = Vendor
+#$3 = Model
+#$4 = Additional files (for bind type)
+  if test "x$1" = "xbind"; then
+    echo monitor/$2/$2.o: monitor/$2/$2-bind.o monitor/$2/$2-meta.o $3 >> $MAKEFILE
+    addobjs "monitor/$2/$2.o monitor/$2/$2-bind.o monitor/$2/$2-meta.o $3"
+  fi
+  if test "x$1" = "xspec"; then
+    echo monitor/$2/$4-monitor.o: monitor/$2/$4-$3.o monitor/$3/$3.o $5 >> $MAKEFILE
+    echo monitor/$2/$4.ko: monitor/$2/$4-monitor.o >> $MAKEFILE
+    addobjs "monitor/$2/$4.ko monitor/$2/$4-monitor.o monitor/$2/$4-$3.o $5"
+    addmods "monitor/$2/$4.ko"
+  fi
+  if test "x$1" = "xtimings"; then
+    echo monitor/$2/$3-timings.o: monitor/$2/$3-timings.c $4 >> $MAKEFILE
+    addobjs "monitor/$2/$3-timings.o $4"
+  fi
+}
+

@@ -1,0 +1,197 @@
+name    640 x 350 @ 85 Hz
+htiming	26413	20317	20317	6095	21333	2032
+hsync	+
+vsync	-
+vtiming	445	350	350	95	382	3
+
+name    640 x 400 @ 85 Hz
+htiming	26413	20317	20317	6095	21333	2032
+hsync	-
+vsync	+
+vtiming	445	400	400	45	401	3
+
+name    720 x 400 @ 85 Hz
+htiming	26366	20282	20282	6095	21296	2028
+hsync	-
+vsync	+
+vtiming	446	400	400	46	401	3
+
+name    640 x 480 @ 60 Hz
+htiming	31778	25422	25740	5720	26058	3813
+hsync	-
+vsync	-
+vtiming	525	480	488	29	490	2
+
+name    640 x 480 @ 72 Hz
+htiming	26413	20317	20571	5587	21079	1270
+hsync	-
+vsync	-
+vtiming	520	480	488	24	489	3
+
+name    640 x 480 @ 75 Hz
+htiming	26667	20317	20317	6349	20825	2032
+hsync	-
+vsync	-
+vtiming	500	480	480	20	481	3
+
+name    640 x 480 @ 85 Hz
+htiming	23111	17778	17778	5333	19333	1556
+hsync	-
+vsync	-
+vtiming	509	480	480	29	481	3
+
+name    800 x 600 @ 56 Hz
+htiming	28444	22222	22222	6222	22889	2000
+hsync	+
+vsync	+
+vtiming	625	600	600	25	601	2
+
+name    800 x 600 @ 60 Hz
+htiming	26400	20000	20000	6400	21000	3200
+hsync	+
+vsync	+
+vtiming	628	600	600	28	601	4
+
+name    800 x 600 @ 72 Hz
+htiming	20800	16000	16000	4800	17120	2400
+hsync	+
+vsync	+
+vtiming	666	600	600	66	637	6
+
+name    800 x 600 @ 75 Hz
+htiming	21333	16162	16162	5172	16485	1616
+hsync	+
+vsync	+
+vtiming	625	600	600	25	601	3
+
+name    800 x 600 @ 85 Hz
+htiming	18631	14222	14222	4409	14791	1138
+hsync	+
+vsync	+
+vtiming	631	600	600	31	601	3
+
+name    1024 x 768 @ 60 Hz
+htiming	20677	15754	15754	4923	16123	2092
+hsync	-
+vsync	-
+vtiming	806	768	768	38	771	6
+
+name    1024 x 768 @ 70 Hz
+htiming	17707	13653	13653	4053	13973	1813
+hsync	-
+vsync	-
+vtiming	806	768	768	38	771	6
+
+name    1024 x 768 @ 75 Hz
+htiming	16660	13003	13003	3657	13206	1219
+hsync	+
+vsync	+
+vtiming	800	768	768	32	769	3
+
+name    1024 x 768 @ 85 Hz
+htiming	14561	10836	10836	3725	11344	1016
+hsync	+
+vsync	+
+vtiming	808	768	768	40	769	3
+
+name    1152 x 864 @ 75 Hz
+htiming	14815	10667	10667	4148	11259	1185
+hsync	+
+vsync	+
+vtiming	900	864	864	36	865	3
+
+name    1280 x 960 @ 60 Hz
+htiming	16667	11852	11852	4815	12741	1037
+hsync	+
+vsync	+
+vtiming	1000	960	960	40	961	3
+
+name    1280 x 960 @ 85 Hz
+htiming	11636	8620	8620	3017	9051	1077
+hsync	+
+vsync	+
+vtiming	1011	960	960	51	961	3
+
+name    1280 x 1024 @ 60 Hz
+htiming	15630	11852	11852	3778	12296	1037
+hsync	+
+vsync	+
+vtiming	1066	1024	1024	42	1025	3
+
+name    1280 x 1024 @ 75 Hz
+htiming	12504	9481	9481	3022	9600	1067
+hsync	+
+vsync	+
+vtiming	1066	1024	1024	42	1025	3
+
+name    1280 x 1024 @ 85 Hz
+htiming	10971	8127	8127	2844	8533	1016
+hsync	+
+vsync	+
+vtiming	1072	1024	1024	48	1025	3
+
+name    1600 x 1200 @ 60 Hz
+htiming	13333	9877	9877	3457	10272	1185
+hsync	+
+vsync	+
+vtiming	1250	1200	1200	50	1201	3
+
+name    1600 x 1200 @ 65 Hz
+htiming	12308	9117	9117	3191	9481	1094
+hsync	+
+vsync	+
+vtiming	1250	1200	1200	50	1201	3
+
+name    1600 x 1200 @ 70 Hz
+htiming	11429	8466	8466	2963	8804	1016
+hsync	+
+vsync	+
+vtiming	1250	1200	1200	50	1201	3
+
+name    1600 x 1200 @ 75 Hz
+htiming	10667	7901	7901	2765	8217	948
+hsync	+
+vsync	+
+vtiming	1250	1200	1200	50	1201	3
+
+name    1600 x 1200 @ 85 Hz
+htiming	9412	6972	6972	2440	7251	837
+hsync	+
+vsync	+
+vtiming	1250	1200	1200	50	1201	3
+
+name    1792 x 1344 @ 60 Hz
+htiming	11956	8752	8752	3204	9377	977
+hsync	-
+vsync	+
+vtiming	1394	1344	1344	50	1345	3
+
+name    1792 x 1344 @ 75 Hz
+htiming	9410	6866	6866	2544	7234	828
+hsync	-
+vsync	+
+vtiming	1417	1344	1344	73	1345	3
+
+name    1856 x 1392 @ 60 Hz
+htiming	11583	8504	8504	3079	8944	1026
+hsync	-
+vsync	+
+vtiming	1439	1392	1392	47	1393	3
+
+name    1856 x 1392 @ 75 Hz
+htiming	8889	6444	6444	2444	6889	778
+hsync	-
+vsync	+
+vtiming	1500	1392	1392	108	1393	3
+
+name    1920 x 1440 @ 60 Hz
+htiming	11111	8205	8205	2906	8752	889
+hsync	-
+vsync	+
+vtiming	1500	1440	1440	60	1441	3
+
+name    1920 x 1440 @ 75 Hz
+htiming	8889	6465	6465	2424	6949	754
+hsync	-
+vsync	+
+vtiming	1500	1440	1440	60	1441	3
