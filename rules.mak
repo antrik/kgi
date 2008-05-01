@@ -1,6 +1,9 @@
 .PHONY: all everything
 
-all: everything
+all: 1x64sg-VANDA
+
+1x64sg-VANDA: board/Matrox/1x64sg-mod.o monitor/Standard/VANDA-mod.o system/$(SYSTEM)/kgim-0.9-mod.o
+	$(LD) $(LDFLAGS) -o $@ $^
 
 clean:
 	rm -f ${OBJS} ${MODS} ${CLEANFILES}
