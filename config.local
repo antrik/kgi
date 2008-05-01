@@ -14,8 +14,18 @@ addmods(){
 }
 
 init(){
-  echo include rules.mak >$MAKEFILE
-  echo include $SYSTEM.mak >>$MAKEFILE
+  echo "########## rules.mak" >$MAKEFILE
+  echo >>$MAKEFILE
+  cat rules.mak >>$MAKEFILE
+  echo >>$MAKEFILE
+
+  echo "########## $SYSTEM.mak" >>$MAKEFILE
+  echo >>$MAKEFILE
+  cat $SYSTEM.mak >>$MAKEFILE
+  echo >>$MAKEFILE
+
+  echo "##########" >>$MAKEFILE
+  echo >>$MAKEFILE
 }
 
 fini(){
