@@ -3,152 +3,152 @@
 
 init
 
-#clock bind 3Dlabs PERMEDIA2 clock/pll-meta.o
-#clock bind 3Dlabs PERMEDIA2v clock/pll-meta.o
-clock bind ATI MACH64
-clock bind ATI RADEON
-#clock spec Avasem AV9064
-#clock spec Avasem AV9194_04
-#clock spec Avasem AV9194_07
-#clock spec Avasem AV9194_11
-#clock spec Avasem AV9194_12
-#clock spec Avasem AV9194_36
-#clock spec Avasem AV9194_37
-#clock spec Avasem AV9194_42
-#clock spec Avasem AV9194_56
-#clock spec IBM MDA
-clock spec IBM VGA
-#clock spec ICS GenDAC
+##clock bind 3Dlabs PERMEDIA2 clock/pll-meta.o
+##clock bind 3Dlabs PERMEDIA2v clock/pll-meta.o
+#clock bind ATI MACH64
+#clock bind ATI RADEON
+##clock spec Avasem AV9064
+##clock spec Avasem AV9194_04
+##clock spec Avasem AV9194_07
+##clock spec Avasem AV9194_11
+##clock spec Avasem AV9194_12
+##clock spec Avasem AV9194_36
+##clock spec Avasem AV9194_37
+##clock spec Avasem AV9194_42
+##clock spec Avasem AV9194_56
+##clock spec IBM MDA
+#clock spec IBM VGA
+##clock spec ICS GenDAC
 clock bind Matrox Gx00 clock/pll-meta.o
-clock bind Matrox Gx50
-#clock bind S3 IDAC clock/pll-meta.o
-#clock bind S3 ViRGE clock/pll-meta.o
-#clock bind TI TVP3026 clock/pll-meta.o
-clock bind nVidia TNT2 clock/pll-meta.o
-
-#ramdac 3Dlabs PERMEDIA2
-#ramdac 3Dlabs PERMEDIA2v
-ramdac ATI MACH64
-ramdac ATI RADEON
-ramdac IBM VGA
+#clock bind Matrox Gx50
+##clock bind S3 IDAC clock/pll-meta.o
+##clock bind S3 ViRGE clock/pll-meta.o
+##clock bind TI TVP3026 clock/pll-meta.o
+#clock bind nVidia TNT2 clock/pll-meta.o
+#
+##ramdac 3Dlabs PERMEDIA2
+##ramdac 3Dlabs PERMEDIA2v
+#ramdac ATI MACH64
+#ramdac ATI RADEON
+#ramdac IBM VGA
 ramdac Matrox Gx00
-#ramdac S3 ViRGE
-#ramdac TI TVP3026
-ramdac nVidia TNT2
-
-#chipset 3Dlabs PERMEDIA
-chipset ATI MACH64 "chipset/IBM/VGA-text-meta.o"
-chipset ATI RADEON "chipset/IBM/VGA-text-meta.o"
-chipset IBM VGA "chipset/IBM/VGA-text-meta.o"
+##ramdac S3 ViRGE
+##ramdac TI TVP3026
+#ramdac nVidia TNT2
+#
+##chipset 3Dlabs PERMEDIA
+#chipset ATI MACH64 "chipset/IBM/VGA-text-meta.o"
+#chipset ATI RADEON "chipset/IBM/VGA-text-meta.o"
+#chipset IBM VGA "chipset/IBM/VGA-text-meta.o"
 chipset Matrox Gx00 "chipset/IBM/VGA-text-meta.o"
-#chipset S3 ViRGE
-chipset nVidia TNT2 "chipset/IBM/VGA-text-meta.o"
-
-#board 3Dlabs Permedia2v
-board ATI Radeon
-board ATI Rage
-#board ATI Rage128
-board CreativeLabs GraphicsBlaster_RivaTNT2_Ultra
-#board ELSA GloriaSynergy
-#board ELSA WinnerOffice2000
-#board IBM VGA
-#board Matrox 1x64sg
-board Matrox G200_AGP
-board Matrox G200_AGP_OEM
-board Matrox G200_PCI
-board Matrox G200_PCI_OEM
-board Matrox G400
-board Matrox G450
-board Matrox G550
-#board Miro miroCrystal20SV
-#board Number9 9FX_Reality_332
-#board S3 ViRGE
-
-#monitor spec ADI MicroScan6G
-#monitor spec EIZO FlexScanF55
-#monitor spec EIZO FlexScanF56
-#monitor spec EIZO FlexScanF77
-#monitor spec HP 98789A
-#monitor spec HP A1097C
-#monitor spec Hitachi CM2111M
-#monitor spec Hitachi CM2112M
-#monitor spec Hitachi CM500U
-#monitor spec Hitachi CM640U
-#monitor spec Hitachi CM641U
-#monitor spec Hitachi CM643U
-#monitor spec Hitachi CM751U
-#monitor spec Hitachi CM752U
-#monitor spec Hitachi CM753U
-#monitor spec Hitachi CM811U
-#monitor spec Hitachi CM812U
-#monitor spec Hitachi CM813U
-#monitor spec Hitachi CM814U
-#monitor spec Hitachi CMDT3140
-#monitor spec Hitachi CML150
-#monitor spec Iiyama A101GT
-#monitor spec Iiyama A102GT
-#monitor spec Iiyama A201HT
-#monitor spec Iiyama A702HT
-#monitor spec Iiyama A901HT
-#monitor spec Iiyama MF8515G
-#monitor spec Iiyama S102GT
-#monitor spec Iiyama S702GT
-#monitor spec Iiyama S901GT
-#monitor spec Iiyama TSA3931HT
-#monitor spec Iiyama TSA4632HT
-#monitor spec Iiyama TXA3611HT
-#monitor spec Iiyama TXA3811HT
-#monitor spec Iiyama TXA3821HT
-#monitor spec MAXDATA Belinea101510
-#monitor spec MAXDATA Belinea102010
-#monitor spec MAXDATA Belinea103040
-#monitor spec MAXDATA Belinea104010
-#monitor spec MAXDATA Belinea105035
-#monitor spec MAXDATA Belinea105046
-#monitor spec MAXDATA Belinea105080
-#monitor spec MAXDATA Belinea106020
-#monitor spec MAXDATA Belinea107015
-#monitor spec MAXDATA Belinea107020
-#monitor spec MAXDATA Belinea107035
-#monitor spec MAXDATA Belinea107050
-#monitor spec MAXDATA Belinea107060
-#monitor spec MAXDATA Belinea107065
-#monitor spec MAXDATA Belinea108015
-#monitor spec MAXDATA Belinea108050
-#monitor spec Miro miro2PAGE
-#monitor spec Miro miroC2071
-#monitor spec Miro miroD1785TE
-#monitor spec Miro miroD2085TE
-#monitor spec Miro miroTRINITRON2
-#monitor spec Sony CPD100GST
-#monitor spec Sony CPD110EST
-#monitor spec Sony CPD120AS
-#monitor spec Sony CPD1730
-#monitor spec Sony CPD200EST
-#monitor spec Sony CPD200GST
-#monitor spec Sony CPD200PST
-#monitor spec Sony CPD220AS
-#monitor spec Sony CPD300SFT5
-#monitor spec Sony CPD400PST
-#monitor spec Sony CPD420GST
-#monitor spec Sony CPD500PST
-#monitor spec Sony CPD520GST
-#monitor spec Sony CPDL150
-#monitor spec Sony GDMF400T9
-#monitor spec Sony GDMF500
-#monitor spec Sony GDMW900
-#monitor spec Standard MDA
-monitor spec Standard crt SVGA
-monitor spec Standard monosync VGA
+##chipset S3 ViRGE
+#chipset nVidia TNT2 "chipset/IBM/VGA-text-meta.o"
+#
+##board 3Dlabs Permedia2v
+#board ATI Radeon
+#board ATI Rage
+##board ATI Rage128
+#board CreativeLabs GraphicsBlaster_RivaTNT2_Ultra
+##board ELSA GloriaSynergy
+##board ELSA WinnerOffice2000
+##board IBM VGA
+board Matrox 1x64sg
+#board Matrox G200_AGP
+#board Matrox G200_AGP_OEM
+#board Matrox G200_PCI
+#board Matrox G200_PCI_OEM
+#board Matrox G400
+#board Matrox G450
+#board Matrox G550
+##board Miro miroCrystal20SV
+##board Number9 9FX_Reality_332
+##board S3 ViRGE
+#
+##monitor spec ADI MicroScan6G
+##monitor spec EIZO FlexScanF55
+##monitor spec EIZO FlexScanF56
+##monitor spec EIZO FlexScanF77
+##monitor spec HP 98789A
+##monitor spec HP A1097C
+##monitor spec Hitachi CM2111M
+##monitor spec Hitachi CM2112M
+##monitor spec Hitachi CM500U
+##monitor spec Hitachi CM640U
+##monitor spec Hitachi CM641U
+##monitor spec Hitachi CM643U
+##monitor spec Hitachi CM751U
+##monitor spec Hitachi CM752U
+##monitor spec Hitachi CM753U
+##monitor spec Hitachi CM811U
+##monitor spec Hitachi CM812U
+##monitor spec Hitachi CM813U
+##monitor spec Hitachi CM814U
+##monitor spec Hitachi CMDT3140
+##monitor spec Hitachi CML150
+##monitor spec Iiyama A101GT
+##monitor spec Iiyama A102GT
+##monitor spec Iiyama A201HT
+##monitor spec Iiyama A702HT
+##monitor spec Iiyama A901HT
+##monitor spec Iiyama MF8515G
+##monitor spec Iiyama S102GT
+##monitor spec Iiyama S702GT
+##monitor spec Iiyama S901GT
+##monitor spec Iiyama TSA3931HT
+##monitor spec Iiyama TSA4632HT
+##monitor spec Iiyama TXA3611HT
+##monitor spec Iiyama TXA3811HT
+##monitor spec Iiyama TXA3821HT
+##monitor spec MAXDATA Belinea101510
+##monitor spec MAXDATA Belinea102010
+##monitor spec MAXDATA Belinea103040
+##monitor spec MAXDATA Belinea104010
+##monitor spec MAXDATA Belinea105035
+##monitor spec MAXDATA Belinea105046
+##monitor spec MAXDATA Belinea105080
+##monitor spec MAXDATA Belinea106020
+##monitor spec MAXDATA Belinea107015
+##monitor spec MAXDATA Belinea107020
+##monitor spec MAXDATA Belinea107035
+##monitor spec MAXDATA Belinea107050
+##monitor spec MAXDATA Belinea107060
+##monitor spec MAXDATA Belinea107065
+##monitor spec MAXDATA Belinea108015
+##monitor spec MAXDATA Belinea108050
+##monitor spec Miro miro2PAGE
+##monitor spec Miro miroC2071
+##monitor spec Miro miroD1785TE
+##monitor spec Miro miroD2085TE
+##monitor spec Miro miroTRINITRON2
+##monitor spec Sony CPD100GST
+##monitor spec Sony CPD110EST
+##monitor spec Sony CPD120AS
+##monitor spec Sony CPD1730
+##monitor spec Sony CPD200EST
+##monitor spec Sony CPD200GST
+##monitor spec Sony CPD200PST
+##monitor spec Sony CPD220AS
+##monitor spec Sony CPD300SFT5
+##monitor spec Sony CPD400PST
+##monitor spec Sony CPD420GST
+##monitor spec Sony CPD500PST
+##monitor spec Sony CPD520GST
+##monitor spec Sony CPDL150
+##monitor spec Sony GDMF400T9
+##monitor spec Sony GDMF500
+##monitor spec Sony GDMW900
+##monitor spec Standard MDA
+#monitor spec Standard crt SVGA
+#monitor spec Standard monosync VGA
 monitor spec Standard monosync VANDA
-
+#
 monitor timings crt VGA
 monitor timings crt VESA
-monitor timings monosync VGA
-monitor timings monosync SVGA
-
-monitor bind monosync "monitor/monosync/SVGA-timings.o"
+#monitor timings monosync VGA
+#monitor timings monosync SVGA
+#
+#monitor bind monosync "monitor/monosync/SVGA-timings.o"
 monitor bind crt "monitor/crt/VESA-timings.o monitor/crt/VGA-timings.o monitor/crt/fixed.o monitor/crt/gtf.o monitor/crt/DDC.o monitor/crt/I2C.o"
-#monitor bind VESA DDC
+##monitor bind VESA DDC
 
 fini
