@@ -142,13 +142,13 @@ board Matrox 1x64sg
 #monitor spec Standard monosync VGA
 monitor spec Standard monosync VANDA
 #
-monitor timings crt VGA
-monitor timings crt VESA
+#monitor timings crt VGA
+#monitor timings crt VESA
 #monitor timings monosync VGA
 monitor timings monosync SVGA
 #
 monitor bind monosync "monitor/monosync/SVGA-timings.o"
-monitor bind crt "monitor/crt/VESA-timings.o monitor/crt/VGA-timings.o monitor/crt/fixed.o monitor/crt/gtf.o monitor/crt/DDC.o monitor/crt/I2C.o"
+#monitor bind crt "monitor/crt/VESA-timings.o monitor/crt/VGA-timings.o monitor/crt/fixed.o monitor/crt/gtf.o monitor/crt/DDC.o monitor/crt/I2C.o"
 ##monitor bind VESA DDC
 
 fini
