@@ -75,7 +75,7 @@ board(){
 #$1 = Vendor
 #$2 = Model
   DRIVERS=$( grep "Driver(.*)" board/$1/$2.spec |sed "s|.*(\(.*\),[ 	]*\(.*\),.*).*|\1/\2.o|g" )
-  echo board/$1/$2.o: board/$1/$2-board.o $DRIVERS >> $MAKEFILE
+  echo board/$1/$2$MOD_SUFFIX: board/$1/$2-board.o $DRIVERS >> $MAKEFILE
   addobjs "board/$1/$2$MOD_SUFFIX board/$1/$2-board.o $DRIVERS"
   addmods "board/$1/$2$MOD_SUFFIX"
 }
