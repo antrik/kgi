@@ -15,7 +15,10 @@ addmods(){
 }
 
 init(){
-  echo "########## rules.mak" >$MAKEFILE
+  echo "SYSTEM=$SYSTEM" >$MAKEFILE
+  echo >>$MAKEFILE
+
+  echo "########## rules.mak" >>$MAKEFILE
   echo >>$MAKEFILE
   cat rules.mak >>$MAKEFILE
   echo >>$MAKEFILE

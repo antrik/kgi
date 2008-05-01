@@ -5,8 +5,6 @@ CFLAGS:=-Wall -O2 -D__KERNEL__ \
     -fno-strict-aliasing \
     $(CFLAGS)
 
-SYSTEM=GNU
-
 MODS+=system/$(SYSTEM)/kgim-0.9.o
 
 AWK?=awk
