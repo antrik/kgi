@@ -1,6 +1,7 @@
 MAKEFILE=Makefile.tmp
 NEWMAKEFILE=Makefile
 SYSTEM=$(uname -s)
+MOD_SUFFIX=.o
 
 TARGETOBJS=""
 TARGETMODS=""
@@ -71,9 +72,9 @@ board(){
 #$1 = Vendor
 #$2 = Model
   DRIVERS=$( grep "Driver(.*)" board/$1/$2.spec |sed "s|.*(\(.*\),[ 	]*\(.*\),.*).*|\1/\2.o|g" )
-  echo board/$1/$2.ko: board/$1/$2-board.o $DRIVERS >> $MAKEFILE
-  addobjs "board/$1/$2.ko board/$1/$2-board.o $DRIVERS"
-  addmods "board/$1/$2.ko"
+  echo board/$1/$2.o: board/$1/$2-board.o $DRIVERS >> $MAKEFILE
+  addobjs "board/$1/$2$MOD_SUFFIX board/$1/$2-board.o $DRIVERS"
+  addmods "board/$1/$2$MOD_SUFFIX"
 }
 
 monitor(){
@@ -89,9 +90,9 @@ monitor(){
   fi
   if test "x$1" = "xspec"; then
     echo monitor/$2/$4-monitor.o: monitor/$2/$4-$3.o monitor/$3/$3.o $5 >> $MAKEFILE
-    echo monitor/$2/$4.ko: monitor/$2/$4-monitor.o >> $MAKEFILE
-    addobjs "monitor/$2/$4.ko monitor/$2/$4-monitor.o monitor/$2/$4-$3.o $5"
-    addmods "monitor/$2/$4.ko"
+    echo monitor/$2/$4$MOD_SUFFIX: monitor/$2/$4-monitor.o >> $MAKEFILE
+    addobjs "monitor/$2/$4$MOD_SUFFIX monitor/$2/$4-monitor.o monitor/$2/$4-$3.o $5"
+    addmods "monitor/$2/$4$MOD_SUFFIX"
   fi
   if test "x$1" = "xtimings"; then
     echo monitor/$2/$3-timings.o: monitor/$2/$3-timings.c $4 >> $MAKEFILE
