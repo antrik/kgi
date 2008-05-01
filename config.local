@@ -1,7 +1,7 @@
 MAKEFILE=Makefile.tmp
 NEWMAKEFILE=Makefile
 SYSTEM=$(uname -s)
-MOD_SUFFIX=.o
+MOD_SUFFIX=-mod.o
 
 TARGETOBJS=""
 TARGETMODS=""

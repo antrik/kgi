@@ -5,6 +5,16 @@ CFLAGS:=-Wall -O2 -D__KERNEL__ \
     -fno-strict-aliasing \
     $(CFLAGS)
 
-MODS+=system/$(SYSTEM)/kgim-0.9.o
+MODS+=system/$(SYSTEM)/kgim-0.9-mod.o
+OBJS+=system/$(SYSTEM)/kgim-0.9.o
 
 AWK?=awk
+
+%-mod.o: %.o
+	$(LD) $(LDFLAGS) -o $@ $^
+
+%-mod.o: %-board.o
+	$(LD) $(LDFLAGS) -o $@ $^
+
+%-mod.o: %-monitor.o
+	$(LD) $(LDFLAGS) -o $@ $^
