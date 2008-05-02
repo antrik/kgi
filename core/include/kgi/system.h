@@ -96,7 +96,7 @@
 /*
 **	i386 CPUs
 */
-#if ((HOST_OS == HOST_OS_Linux) || (HOST_OS == HOST_OS_BeOS))
+#if ((HOST_OS == HOST_OS_Linux) || (HOST_OS == HOST_OS_BeOS) || (HOST_OS == HOST_OS_GNU))
 #	if ((HOST_CPU == HOST_CPU_i386) || (HOST_CPU == HOST_CPU_i486) || \
 		(HOST_CPU == HOST_CPU_i586) || (HOST_CPU == HOST_CPU_i686))
 #		include <kgi/i386-types.h>
