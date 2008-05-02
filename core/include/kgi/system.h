@@ -55,6 +55,7 @@
 #define	HOST_OS_Linux	2
 #define	HOST_OS_BeOS	3
 #define HOST_OS_FreeBSD 4
+#define HOST_OS_GNU	5
 
 /*	Intel CPUs
 */
