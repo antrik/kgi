@@ -49,11 +49,6 @@
 #endif
 #define	MODULE
 
-#include <linux/config.h>
-#include <linux/module.h>
-
-MODULE_LICENSE("GPL and additional rights");
-
 #include <kgi/module.h>
 
 /* ----------------------------------------------------------------------------
@@ -63,52 +58,52 @@ MODULE_LICENSE("GPL and additional rights");
 
 /*	misc options
 */
-signed int display = -1;	MODULE_PARM(display,  "0-255i");
-unsigned long law_base = 0;	MODULE_PARM(law_base, "1-4294967295i");
+signed int display = -1;
+unsigned long law_base = 0;
 
 /*	PCI options
 */
-signed int  pcibus = -1;	MODULE_PARM(pcibus, "0-255i");
-signed int  pcidev = -1;	MODULE_PARM(pcidev, "0-255i");
-signed int  pcifn  = -1;	MODULE_PARM(pcifn,  "0-255i");
-unsigned long pcibase0 = 0;	MODULE_PARM(pcibase0, "1-4294967295i");
-unsigned long pcibase1 = 0;	MODULE_PARM(pcibase1, "1-4294967295i");
-unsigned long pcibase2 = 0;	MODULE_PARM(pcibase2, "1-4294967295i");
-unsigned long pcibase3 = 0;	MODULE_PARM(pcibase3, "1-4294967295i");
-unsigned long pcibase4 = 0;	MODULE_PARM(pcibase4, "1-4294967295i");
-unsigned long pcibase5 = 0;	MODULE_PARM(pcibase5, "1-4294967295i");
-unsigned long pcibase6 = 0;	MODULE_PARM(pcibase6, "1-4294967295i");
-unsigned long pcibase7 = 0;	MODULE_PARM(pcibase7, "1-4294967295i");
+signed int  pcibus = -1;
+signed int  pcidev = -1;
+signed int  pcifn  = -1;
+unsigned long pcibase0 = 0;
+unsigned long pcibase1 = 0;
+unsigned long pcibase2 = 0;
+unsigned long pcibase3 = 0;
+unsigned long pcibase4 = 0;
+unsigned long pcibase5 = 0;
+unsigned long pcibase6 = 0;
+unsigned long pcibase7 = 0;
 
 /*	DAC options
 */
-unsigned int dac_lclk_min =  0;	MODULE_PARM(dac_lclk_min, "0-4294967295i");
-unsigned int dac_lclk_max = -1;	MODULE_PARM(dac_lclk_max, "0-4294967295i");
-unsigned int dac_dclk_min =  0;	MODULE_PARM(dac_dclk_min, "0-4294967295i");
-unsigned int dac_dclk_max = -1;	MODULE_PARM(dac_dclk_max, "0-4294967295i");
+unsigned int dac_lclk_min =  0;
+unsigned int dac_lclk_max = -1;
+unsigned int dac_dclk_min =  0;
+unsigned int dac_dclk_max = -1;
 
 /*	Clock options
 */
-unsigned int fref =  0;		MODULE_PARM(fref, "0-4294967295i");
-unsigned int fvco_min = 0;	MODULE_PARM(fvco_min, "0-4294967295i");
-unsigned int fvco_max = 0;	MODULE_PARM(fvco_max, "0-4294967295i");
+unsigned int fref =  0;
+unsigned int fvco_min = 0;
+unsigned int fvco_max = 0;
 
 /*	chipset options
 */
-char *chipset = NULL;		MODULE_PARM(chipset, "s");
-unsigned int chipset_ram = 0;	MODULE_PARM(chipset_ram, "0-4294967295i");
+char *chipset = NULL;
+unsigned int chipset_ram = 0;
 
 /*	monitor options
 */
-char *monitor_timings = NULL;	MODULE_PARM(timings, "s");
-char *monitor_vfreq = NULL;	MODULE_PARM(monitor_vfreq, "s");
-char *monitor_hfreq = NULL;	MODULE_PARM(monitor_hfreq, "s");
-char *monitor_dclk = NULL;	MODULE_PARM(monitor_dclk, "s");
-unsigned int monitor_ddc = 1;	MODULE_PARM(monitor_ddc, "0-2i");
-char *sync_type = NULL;		MODULE_PARM(sync_type, "s");
-char *monitor_type = NULL;	MODULE_PARM(monitor_type, "s");
-unsigned int monitor_width = 0; MODULE_PARM(monitor_width, "0-4294967295i");
-unsigned int monitor_height = 0;MODULE_PARM(monitor_height, "0-4294967295i");
+char *monitor_timings = NULL;
+char *monitor_vfreq = NULL;
+char *monitor_hfreq = NULL;
+char *monitor_dclk = NULL;
+unsigned int monitor_ddc = 1;
+char *sync_type = NULL;
+char *monitor_type = NULL;
+unsigned int monitor_width = 0;
+unsigned int monitor_height = 0;
 
 /*	Initialize kgim_display_t.options from the module-parameters passed.
 **	This is common to all boards but needs to be local to each module.
@@ -384,12 +379,10 @@ static inline void kgim_options_init(kgim_display_t *dpy,
 									\
 	static void kgim_##vendor##_##model##_inc_refcount(kgi_display_t *dpy) \
 	{								\
-		MOD_INC_USE_COUNT;					\
 	}								\
 									\
 	static void kgim_##vendor##_##model##_dec_refcount(kgi_display_t *dpy) \
 	{								\
-		MOD_DEC_USE_COUNT;					\
 	}								\
 									\
 	static const kgi_u32_t kgim_##vendor##_##model##_subsystemID[] = \
