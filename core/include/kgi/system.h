@@ -127,14 +127,24 @@
 #	define KGI_SYS_NEED_i64
 #endif
 
+#if (HOST_OS == HOST_OS_GNU)
+	static inline void _nanosleep(__kgi_u32_t ns)
+	{
+		#include <errno.h>
+		#include <time.h>
+		struct timespec ts={0, ns};
+		while(nanosleep(&ts, &ts) && errno==EINTR)
+			;
+	}
+#endif
+
 static inline void kgi_udelay (__kgi_u32_t d) {
 #if (HOST_OS == HOST_OS_Linux)
 	#include <asm/delay.h>
 	udelay ((unsigned long)d);
 #elif (HOST_OS == HOST_OS_GNU)
 	/* XXX is nanosleep() precise enough for this?... */
-	void kgi_nanosleep(__kgi_u32_t ns);
-	kgi_nanosleep(1000*d);
+	_nanosleep(1000*d);
 #else
 #error kgi_udelay not implemented
 #endif
@@ -144,14 +154,7 @@ static inline void kgi_udelay (__kgi_u32_t d) {
 /*FIXME: inaccurate */
 #define kgi_nanosleep(x) kgi_udelay(2)
 #elif (HOST_OS == HOST_OS_GNU)
-	void kgi_nanosleep(__kgi_u32_t ns)
-	{
-		#include <errno.h>
-		#include <time.h>
-		struct timespec ts={0, ns};
-		while(nanosleep(&ts, &ts) && errno==EINTR)
-			;
-	}
+#define kgi_nanosleep(x) _nanosleep(x)
 #else
 #error kgi_nanosleep not implemented
 #endif
