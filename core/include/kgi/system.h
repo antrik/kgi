@@ -160,6 +160,9 @@ static inline void kgi_udelay (__kgi_u32_t d) {
 #if (HOST_OS == HOST_OS_Linux)
 #include <linux/sched.h>
 #define kgi_wakeup wake_up
+#elif (HOST_OS == HOST_OS_GNU)
+#include <error.h>
+#define kgi_wakeup(x) error_at_line(1, 0, __FILE__, __LINE__, "kgi_wakeup() not implemented")
 #else
 #error kgi_wakeup not implemented
 #endif
