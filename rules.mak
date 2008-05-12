@@ -12,13 +12,13 @@ distclean: clean
 	rm -f Makefile
 
 %.o: %-bind.o %-meta.o
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -r $(LDFLAGS) -o $@ $^
 
 %.o: %-fixed.o clock/fixed-meta.o
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -r $(LDFLAGS) -o $@ $^
 
 %-monitor.o:
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -r $(LDFLAGS) -o $@ $^
 
 clock/%-fixed.o: clock/%.spec
 	$(CC) $(CFLAGS) -c -o $@ -DFIXED_CLOCK_SPEC=\"$<\" clock/fixed-bind.c
