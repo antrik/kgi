@@ -56,13 +56,13 @@ extern void kgim_gnu_error(const char *file, int line, const char *func, const c
 
 extern kgi_u_t kgim_attr_bits(const kgi_u8_t *bpa);
 
-extern void	kgim_memset(void *p, kgi_u8_t val, kgi_size_t size);
-extern void	kgim_memcpy(void *dst, const void *src, kgi_size_t size);
-extern kgi_s_t	kgim_memcmp(const void *s1, const void *s2, kgi_size_t size);
+#define kgim_memset memset
+#define kgim_memcpy memcpy
+#define kgim_memcmp memcmp
 
-extern kgi_s_t	kgim_strcmp(const kgi_u8_t *s1, const kgi_u8_t *s2);
-extern kgi_u8_t	*kgim_strcpy(kgi_u8_t *dst, const kgi_u8_t *src);
-extern kgi_u8_t	*kgim_strncpy(kgi_u8_t *dst, const kgi_u8_t *src, kgi_size_t size);
+#define kgim_strcmp strcmp
+#define kgim_strcpy strcpy
+#define kgim_strncpy strncpy
 
 extern kgi_error_t kgim_display_init(kgim_display_t *dpy);
 extern void kgim_display_done(kgim_display_t *dpy);

@@ -173,64 +173,6 @@ void kgim_notice(const char *fmt, ...)
 }
 
 /*
-**	memset(), memcpy(), memcmp() and strcpy()
-*/
-void kgim_memset(void *p, kgi_u8_t val, kgi_size_t size)
-{
-#if (HOST_OS == HOST_OS_Linux)
-	memset(p, val, size);
-#else
-#	error implement kgim_memset()!
-#endif
-}
-
-void kgim_memcpy(void *dst, const void *src, kgi_size_t size)
-{
-#if (HOST_OS == HOST_OS_Linux)
-	memcpy(dst, src, size);
-#else
-#	error implement kgim_memcpy()!
-#endif
-}
-
-kgi_s_t kgim_memcmp(const void *s1, const void *s2, kgi_size_t size)
-{
-#if (HOST_OS == HOST_OS_Linux)
-	return memcmp(s1, s2, size);
-#else
-#	error implement kgim_memcmp()!
-#endif
-}
-
-kgi_s_t kgim_strcmp(const kgi_u8_t *s1, const kgi_u8_t *s2)
-{
-#if (HOST_OS == HOST_OS_Linux)
-	return strcmp(s1, s2);
-#else
-#	error implement kgim_strcmp()!
-#endif
-}
-
-kgi_u8_t *kgim_strcpy(kgi_u8_t *dst, const kgi_u8_t *src)
-{
-#if (HOST_OS == HOST_OS_Linux)
-	return strcpy(dst, src);
-#else
-#	error implement kgim_strcpy()!
-#endif
-}
-
-kgi_u8_t *kgim_strncpy(kgi_u8_t *dst, const kgi_u8_t *src, kgi_size_t size)
-{
-#if (HOST_OS == HOST_OS_Linux)
-	return strncpy(dst, src, size);
-#else
-#	error implement kgim_strncpy()!
-#endif
-}
-
-
-/*
 **	kgim_display_t initialization/deinitalization
 */
 #define	KGIM_ALIGN(x)	(((x) + 7) & ~7)

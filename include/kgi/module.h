@@ -51,6 +51,8 @@
 #ifndef _kgi_module_h
 #define _kgi_module_h
 
+#include <string.h>    /* for modulelib.h in fact, but must happen here, because later the preprocessor is screwed up... */
+
 #define __KGI_STRINGIFY_(s) #s
 #define __KGI_STRINGIFY(s) __KGI_STRINGIFY_(s)
 
