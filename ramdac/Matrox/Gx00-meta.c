@@ -104,7 +104,7 @@ static inline const mgag_ramdac_mode_record_t *mgag_ramdac_mode_record(
 			continue;
 		}
 
-		if (kgim_strcmp(mgag_ramdac_mode[i].bpda, bpfa) != 0) {
+		if (kgim_strcmp((char *)mgag_ramdac_mode[i].bpda, (char *)bpfa) != 0) {
 
 			continue;
 		}

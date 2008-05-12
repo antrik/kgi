@@ -563,7 +563,7 @@ kgi_error_t vga_text_chipset_mode_check(vga_text_chipset_t *vga,
 	/*	frame attributes must be Index4 Foreground4 Texture8
 	*/
 	if ((img[0].fam != KGI_AM_TEXT) || 
-		kgim_strcmp(img[0].bpfa, vga_text_chipset_448)) {
+		kgim_strcmp((char *)img[0].bpfa, (char *)vga_text_chipset_448)) {
 
 		KRN_ERROR("pixel attributes not supported");
 		return -KGI_ERRNO(CHIPSET, INVAL);
@@ -713,7 +713,7 @@ kgi_error_t vga_text_chipset_mode_check(vga_text_chipset_t *vga,
 	case KGI_TC_CHECK:
 
 		if ((KGI_AM_TEXT != dpm->dam) || 
-			kgim_strcmp(dpm->bpda, vga_text_chipset_448)) {
+			kgim_strcmp((char *)dpm->bpda, (char *)vga_text_chipset_448)) {
 
 			KRN_ERROR("dot port attributes %.8x not supported",
 				dpm->dam);
