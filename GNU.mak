@@ -1,4 +1,4 @@
-CFLAGS:=-Wall -O2 -D__KERNEL__ \
+CFLAGS:=-Wall -O2 -D__KERNEL__ -D__MODULE__ \
     -include core/include/kgi/config.h -Icore/include -Iinclude -I. \
     -fno-strict-aliasing \
     $(CFLAGS)
