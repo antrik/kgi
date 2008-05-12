@@ -44,6 +44,8 @@
 #include <kgi/maintainers.h>
 #define	MAINTAINER	Steffen_Seeger
 
+#include <string.h>
+
 #ifndef DEBUG_LEVEL
 #define DEBUG_LEVEL 1
 #endif
