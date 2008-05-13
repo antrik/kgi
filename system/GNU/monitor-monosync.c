@@ -28,11 +28,6 @@
 
 #include <kgi/module.h>
 
-#define MODULE
-#include <linux/config.h>
-#include <linux/module.h>
-MODULE_LICENSE("GPL and additional rights");
-
 /*
 **	monitor spec conversion macros - may be considered "advanced Voodoo"
 */

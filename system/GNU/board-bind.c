@@ -49,7 +49,6 @@
 #ifndef DEBUG_LEVEL
 #define DEBUG_LEVEL 1
 #endif
-#define	MODULE
 
 #include <kgi/module.h>
 

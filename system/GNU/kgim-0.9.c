@@ -45,22 +45,15 @@
 ** 	
 */
 
-#define	MODULE
-
 #ifndef DEBUG_LEVEL
 #define	DEBUG_LEVEL	1
 #endif
 
 #include "kgi/config.h"
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/module.h>
 
 #include <kgi/module.h>
 #define __KGI_NEED_MALLOC
 #include <kgi/alloc.h>
-
-MODULE_LICENSE("GPL and additional rights");
 
 kgi_u_t kgim_attr_bits(const kgi_u8_t *bpa)
 {
