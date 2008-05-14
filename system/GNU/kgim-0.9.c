@@ -86,6 +86,13 @@ kgi_u_t kgim_attr_bits(const kgi_u8_t *bpa)
 #		define	PRINT	printf
 #	endif
 #	include <stdarg.h>
+#elif (HOST_OS == HOST_OS_GNU)
+#	define	__KGIM_HAS_STDARGS
+#	define	PRINT	printf
+#	include <stdarg.h>
+#	include <stdio.h>
+#	define KERN_ERR "KGI error at "
+#	define KERN_NOTICE "KGI notice: "
 #endif
 
 void kgim_ansi_debug(int level, const char *fmt, ...)
