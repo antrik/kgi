@@ -52,8 +52,8 @@
 #include "kgi/config.h"
 
 #include <kgi/module.h>
-#define __KGI_NEED_MALLOC
-#include <kgi/alloc.h>
+
+#include <stdlib.h>
 
 kgi_u_t kgim_attr_bits(const kgi_u8_t *bpa)
 {
@@ -541,17 +541,17 @@ static kgi_error_t kgim_display_subsystem_init(kgim_display_t *dpy,
 	KRN_DEBUG(2, "Initializing subsystem %i", system);
 
 	meta_data = meta->data_size ?
-		kgim_alloc(meta->data_size, GFP_KERNEL) : NULL;
+		malloc(meta->data_size) : NULL;
 	meta_io   = meta->io_size   ?
-		kgim_alloc(meta->io_size, GFP_KERNEL)   : NULL;
+		malloc(meta->io_size)   : NULL;
 
 	if ((meta->data_size && (NULL == meta_data)) ||
 		(meta->io_size && (NULL == meta_io))) {
 
 		KRN_ERROR("Failed to allocate meta data and I/O context");
-		kgim_free(meta_io);
+		free(meta_io);
 		meta_io = NULL;
-		kgim_free(meta_data);
+		free(meta_data);
 		meta_data = NULL;
 
 		return -ENOMEM;
@@ -586,11 +586,11 @@ static kgi_error_t kgim_display_subsystem_init(kgim_display_t *dpy,
 
 			if (meta->io_size) {
 
-				kgim_free(meta_io);
+				free(meta_io);
 				meta_io = NULL;
 			}
 
-			kgim_free(meta_data);
+			free(meta_data);
 			meta_data = NULL;
 
 			return error;
@@ -623,11 +623,11 @@ static kgi_error_t kgim_display_subsystem_init(kgim_display_t *dpy,
 
 			if (meta->io_size) {
 
-				kgim_free(meta_io);
+				free(meta_io);
 				meta_io = NULL;
 			}
 
-			kgim_free(meta_data);
+			free(meta_data);
 			meta_data = NULL;
 
 			return error;
@@ -670,11 +670,11 @@ static void kgim_display_subsystem_done(kgim_display_t *dpy,
 
 	if (meta->io_size) {
 
-		kgim_free(meta_io);
+		free(meta_io);
 		meta_io = NULL;
 		dpy->subsystem[system].meta_io = NULL;
 	}
-	kgim_free(meta_data);
+	free(meta_data);
 	meta_data = NULL;
 	dpy->subsystem[system].meta_data = NULL;
 	dpy->kgi.mode_size -= KGIM_ALIGN(meta->mode_size);
