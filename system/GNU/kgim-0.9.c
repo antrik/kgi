@@ -246,14 +246,14 @@ static kgi_error_t kgim_display_check_mode(kgi_display_t *kgi_dpy,
 				KRN_DEBUG(2, "Proposing default textmode");
 
 				img[0].fam = KGI_AM_TEXT;
-				kgim_strcpy(img[0].bpfa, (kgi_u8_t[]){4,4,8,0});
+				kgim_strcpy((char *)img[0].bpfa, (char[]){4,4,8,0});
 
 			} else {
 
 				KRN_DEBUG(2, "Proposing default graphic mode");
 
 				img[0].fam = KGI_AM_COLOR_INDEX;
-				kgim_strcpy(img[0].bpfa, (kgi_u8_t[]){8,0});
+				kgim_strcpy((char *)img[0].bpfa, (char[]){8,0});
 			}
 		}
 	}
