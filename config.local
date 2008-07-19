@@ -14,6 +14,10 @@ addmods(){
   TARGETMODS="$TARGETMODS $1"
 }
 
+addcleanfiles(){
+  TARGETCLEANFILES="$TARGETCLEANFILES $1"
+}
+
 init(){
   echo "SYSTEM=$SYSTEM" >$MAKEFILE
   echo >>$MAKEFILE
@@ -35,6 +39,7 @@ init(){
 fini(){
   echo OBJS += $TARGETOBJS >> $MAKEFILE
   echo MODS += $TARGETMODS >> $MAKEFILE
+  echo CLEANFILES += $TARGETCLEANFILES >> $MAKEFILE
   echo everything: \${OBJS} \${MODS} >> $MAKEFILE
   mv $MAKEFILE $NEWMAKEFILE
 }
@@ -100,6 +105,7 @@ monitor(){
   if test "x$1" = "xtimings"; then
     echo monitor/$2/$3-timings.o: monitor/$2/$3-timings.c $4 >> $MAKEFILE
     addobjs "monitor/$2/$3-timings.o $4"
+    addcleanfiles "monitor/$2/$3-timings.c"
   fi
 }
 
