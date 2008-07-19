@@ -28,7 +28,7 @@
 /**************************************************************************
  * Video Memory Mapping section                                            
  ***************************************************************************/
-pointer 
+void * 
 xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
 {
     mach_port_t device,iopl_dev;
@@ -60,10 +60,10 @@ xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
 		 &addr,
 		 Size,
 		 0,     /* mask */
-		 TRUE,  /* anywhere */
+		 1,  /* anywhere */
 		 iopl_mem,
 		 (vm_offset_t)Base,
-		 FALSE, /* copy on write */
+		 0, /* copy on write */
 		 VM_PROT_READ|VM_PROT_WRITE,
 		 VM_PROT_READ|VM_PROT_WRITE,
 		 VM_INHERIT_SHARE);
@@ -79,11 +79,11 @@ xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
 	errno = err;
 	FatalError("xf86MapVidMem() can't mach_port_deallocate.(iopl_dev) (%s)\n",strerror(errno));
     }
-    return (pointer)addr;
+    return (void *)addr;
 }
 
 void 
-xf86UnMapVidMem(int ScreenNum,pointer Base,unsigned long Size)
+xf86UnMapVidMem(int ScreenNum,void *Base,unsigned long Size)
 {
     kern_return_t err = vm_deallocate(mach_task_self(), (int)Base, Size);
     if( err )
@@ -94,10 +94,10 @@ xf86UnMapVidMem(int ScreenNum,pointer Base,unsigned long Size)
     return;
 }
 
-Bool 
+int 
 xf86LinearVidMem()
 {
-    return(TRUE);
+    return(1);
 }
 
 /**************************************************************************
@@ -110,16 +110,16 @@ xf86LinearVidMem()
  */
 extern int ioperm(unsigned long __from, unsigned long __num, int __turn_on);
 
-Bool
+int
 xf86EnableIO()
 {
     if (ioperm(0, 0xffff, 1)) {
 	FatalError("xf86EnableIO: ioperm() failed (%s)\n", strerror(errno));
-	return FALSE;
+	return 0;
     }
     ioperm(0x40,4,0); /* trap access to the timer chip */
     ioperm(0x60,4,0); /* trap access to the keyboard controller */
-    return TRUE;
+    return 1;
 }
 	
 void
@@ -132,10 +132,10 @@ xf86DisableIO()
 /**************************************************************************
  * Interrupt Handling section                                              
  **************************************************************************/
-Bool 
+int 
 xf86DisableInterrupts()
 {
-    return TRUE;
+    return 1;
 }
 void 
 xf86EnableInterrupts()
@@ -144,14 +144,14 @@ xf86EnableInterrupts()
 }
 
 void
-xf86MapReadSideEffects(int ScreenNum, int Flags, pointer Base,
+xf86MapReadSideEffects(int ScreenNum, int Flags, void *Base,
 	unsigned long Size)
 {
 }
 
-Bool
+int
 xf86CheckMTRR(int s)
 {
-	return FALSE;
+	return 0;
 }
 
