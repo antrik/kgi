@@ -32,7 +32,7 @@ monitor/%-monosync.o: monitor/%.spec
 monitor/%-crt.o: monitor/%.spec
 	$(CC) $(CFLAGS) -c -o $@ -DMONITOR_SPEC=\"$<\" system/${SYSTEM}/monitor-crt.c
 
-system/$(SYSTEM)/kgim-0.9.o: system/$(SYSTEM)/kgim-0.9.c
+system/$(SYSTEM)/%.o: system/$(SYSTEM)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 monitor/crt/VESA-timings.c: monitor/crt/VESA.t
