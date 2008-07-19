@@ -4,7 +4,9 @@ CFLAGS:=-Wall -O2 -D__KERNEL__ -D__MODULE__ \
     $(CFLAGS)
 
 MODS+=system/$(SYSTEM)/kgim-0.9-mod.o
-OBJS+=system/$(SYSTEM)/kgim-0.9.o
+OBJS+=system/$(SYSTEM)/kgim-0.9.o system/$(SYSTEM)/system.o
+
+system/$(SYSTEM)/kgim-0.9-mod.o: system/$(SYSTEM)/kgim-0.9.o system/$(SYSTEM)/system.o
 
 AWK?=awk
 
