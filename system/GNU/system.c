@@ -49,6 +49,13 @@
 #define	DEBUG_LEVEL	0
 #endif
 
+#define __KGIM_HAS_STDARGS
+#define PRINT printf
+#include <stdarg.h>
+#include <stdio.h>
+#define KERN_ERR "KGI error at "
+#define KERN_NOTICE "KGI notice: "
+
 #include "kgi/config.h"
 
 #define	KGI_SYS_NEED_IO
@@ -57,13 +64,6 @@
 
 #define	EOK 0
 #define	__KRN_BUF_SIZE	1024
-
-#define __KGIM_HAS_STDARGS
-#define PRINT printf
-#include <stdarg.h>
-#include <stdio.h>
-#define KERN_ERR "KGI error at "
-#define KERN_NOTICE "KGI notice: "
 
 #ifdef	KRN_DEBUG_ANSI_CPP
 void __krn_ansi_debug(int level, const char *fmt, ...)
