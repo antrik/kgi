@@ -2,7 +2,7 @@
 
 all: 1x64sg-VANDA
 
-1x64sg-VANDA: board/Matrox/1x64sg-mod.o monitor/Standard/VANDA-mod.o system/$(SYSTEM)/kgim-0.9-mod.o
+1x64sg-VANDA: board/Matrox/1x64sg-mod.o monitor/Standard/VANDA-mod.o system/$(SYSTEM)/kgim-0.9-mod.o core/core-mod.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -lpci -o $@ $^
 
 clean:
