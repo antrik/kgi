@@ -21,9 +21,14 @@
  *
  */
 
+#define _GNU_SOURCE
+
+#include <stdlib.h>
+
 #include <mach.h>
 #include <device/device.h>
 #include <mach/machine/mach_i386.h>
+#include <hurd.h>
 
 /**************************************************************************
  * Video Memory Mapping section                                            
