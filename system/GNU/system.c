@@ -248,10 +248,8 @@ mem_vaddr_t mem_alloc_region(mem_region_t *r)
 **	PCI configuration space
 */
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
 int pcicfg_find_device(pcicfg_vaddr_t *addr, const __kgi_u32_t *signatures)
 {
-#ifdef CONFIG_PCI
 	struct pci_dev *dev = NULL;
 
 	KRN_DEBUG(2, "scanning pcicfg space:");
@@ -286,16 +284,12 @@ KRN_DEBUG(2,"starting at %.8x", *addr);
 			return 0;
 		}
 	}
-#else
-	KRN_DEBUG(1, "PCICFG not enabled");
-#endif
 	*addr = PCICFG_NULL;
 	return 1;
 }
 
 int pcicfg_find_subsystem(pcicfg_vaddr_t *addr, const __kgi_u32_t *signatures)
 {
-#ifdef CONFIG_PCI
 	struct pci_dev *dev = NULL;
 
 	KRN_DEBUG(2, "scanning pcicfg space:");
@@ -337,16 +331,12 @@ KRN_DEBUG(2,"starting at %.8x", *addr);
 			return 0;
 		}
 	}
-#else
-	KRN_DEBUG(1, "PCICFG not enabled");
-#endif
 	*addr = PCICFG_NULL;
 	return 1;
 }
 
 int pcicfg_find_class(pcicfg_vaddr_t *addr, const __kgi_u32_t *signatures)
 {
-#ifdef CONFIG_PCI
 	struct pci_dev *dev = NULL;
 
 	KRN_DEBUG(2, "scanning pcicfg space:");
@@ -381,67 +371,44 @@ KRN_DEBUG(2,"starting at %.8lx", *addr);
 			return 0;
 		}
 	}
-#else
-	KRN_DEBUG(1, "PCICFG not enabled");
-#endif
 	*addr = PCICFG_NULL;
 	return 1;
 }
-
-#endif /* < 2.5.0 */
 
 
 #define	PCIARGS	(vaddr >> 24) & 0xFF, (vaddr >> 16) & 0xFF, vaddr & 0xFF
 
 __kgi_u8_t  pcicfg_in8 (const pcicfg_vaddr_t vaddr)
 {
-#ifdef CONFIG_PCI
 	__kgi_u8_t tmp;
 	return pcibios_read_config_byte(PCIARGS, &tmp) ? -1 : tmp;
-#else
-	return (__kgi_u8_t) -1L;
-#endif
 }
 
 __kgi_u16_t pcicfg_in16(const pcicfg_vaddr_t vaddr)
 {
-#ifdef CONFIG_PCI
 	__kgi_u16_t tmp;
 	return pcibios_read_config_word(PCIARGS, &tmp) ? -1 : tmp;
-#else
-	return (__kgi_u16_t) -1L;
-#endif
 }
 
 __kgi_u32_t pcicfg_in32(const pcicfg_vaddr_t vaddr)
 {
-#ifdef CONFIG_PCI
 	__kgi_u32_t tmp;
 	return pcibios_read_config_dword(PCIARGS, &tmp) ? -1 : tmp;
-#else
-	return (__kgi_u32_t) -1L;
-#endif
 }
 
 void pcicfg_out8 (const __kgi_u8_t val, const pcicfg_vaddr_t vaddr)
 {
-#ifdef CONFIG_PCI
 	pcibios_write_config_byte(PCIARGS, val);
-#endif
 }
 
 void pcicfg_out16(const __kgi_u16_t val, const pcicfg_vaddr_t vaddr)
 {
-#ifdef CONFIG_PCI
 	pcibios_write_config_word(PCIARGS, val);
-#endif
 }
 
 void pcicfg_out32(const __kgi_u32_t val, const pcicfg_vaddr_t vaddr)
 {
-#ifdef CONFIG_PCI
 	pcibios_write_config_dword(PCIARGS, val);
-#endif
 }
 
 #if 0
