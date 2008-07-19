@@ -127,6 +127,8 @@ void __krn_notice(const char *fmt, ...)
 }
 
 
+#if 0
+
 /*
 **	I/O stuff
 */
@@ -474,3 +476,5 @@ void irq_free_line(irq_line_t *irq)
 	free_irq(irq->line, irq);
 	KRN_DEBUG(2, "irq_free_line('%s', line %i)", irq->name, irq->line);
 }
+
+#endif
