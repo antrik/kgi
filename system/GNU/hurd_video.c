@@ -104,11 +104,7 @@ xf86LinearVidMem()
  * I/O Permissions section                                                 
  ***************************************************************************/
 
-/*
- * Due to conflicts with "compiler.h", don't rely on <sys/io.h> to declare
- * this.
- */
-extern int ioperm(unsigned long __from, unsigned long __num, int __turn_on);
+#include <sys/io.h>
 
 int
 xf86EnableIO()
