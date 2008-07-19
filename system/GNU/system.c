@@ -181,9 +181,14 @@ io_vaddr_t io_alloc_region(io_region_t *r)
 	return IO_NULL;
 }
 
+#endif
+
 /*
 **	memory I/O space
 */
+
+#include "hurd_video.h"
+
 __kgi_error_t mem_check_region(mem_region_t *r)
 {
 	/*	AFAIK Linux has no resource management for memory regions yet.
@@ -198,14 +203,7 @@ mem_vaddr_t mem_claim_region(mem_region_t *r)
 {
 	KRN_ASSERT(r->base_virt == NULL); /* claim of claimed region? */
 
-	if (r->base_io < 1 MB) {
-
-		r->base_virt = phys_to_virt(r->base_io);
-
-	} else {
-
-		r->base_virt = ioremap(r->base_io, r->size);
-	}
+	r->base_virt = xf86MapVidMem(0 /*ScreenNum*/, 0 /*Flags*/, r->base_io, r->size);
 #ifndef	__i386__
 #	warning	Are we i386 specific here? CHECK THIS CODE!
 #endif
@@ -221,10 +219,7 @@ mem_vaddr_t mem_claim_region(mem_region_t *r)
 
 mem_vaddr_t mem_free_region(mem_region_t *r)
 {
-	if (r->base_io >= 1 MB) {
-
-		iounmap(r->base_virt);
-	}
+	xf86UnMapVidMem(0 /*ScreenNum*/, r->base_virt, r->size);
 	KRN_DEBUG(2, "mem_free_region %s, base_io %p, base_virt %p, "
 		"base_phys %p, base_bus %p", r->name, (void *) r->base_io,
 		r->base_virt, (void *) r->base_phys, (void *) r->base_bus);
@@ -242,7 +237,6 @@ mem_vaddr_t mem_alloc_region(mem_region_t *r)
 	return NULL;
 }
 
-#endif
 
 /*
 **	PCI configuration space

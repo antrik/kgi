@@ -8,6 +8,8 @@ OBJS+=system/$(SYSTEM)/kgim-0.9.o system/$(SYSTEM)/system.o system/$(SYSTEM)/hur
 
 system/$(SYSTEM)/kgim-0.9-mod.o: system/$(SYSTEM)/kgim-0.9.o system/$(SYSTEM)/system.o system/$(SYSTEM)/hurd_video.o
 
+system/$(SYSTEM)/system.o system/$(SYSTEM)/hurd_video.o: system/$(SYSTEM)/hurd_video.h
+
 AWK?=awk
 
 %-mod.o: %.o
