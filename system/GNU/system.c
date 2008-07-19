@@ -248,6 +248,21 @@ mem_vaddr_t mem_alloc_region(mem_region_t *r)
 **	PCI configuration space
 */
 
+#include <pci/pci.h>
+
+static struct pci_access *pacc=NULL;
+
+void init_libpci(void)
+{
+	if(pacc)
+		return;
+
+	pacc = pci_alloc();		/* Get the pci_access structure */
+	/* Set all options you want -- here we stick with the defaults */
+	pci_init(pacc);		/* Initialize the PCI library */
+	pci_scan_bus(pacc);		/* We want to get the list of devices */
+}
+
 int pcicfg_find_device(pcicfg_vaddr_t *addr, const __kgi_u32_t *signatures)
 {
 	struct pci_dev *dev = NULL;
@@ -261,14 +276,16 @@ KRN_DEBUG(2,"starting at %.8x", *addr);
 
 	}
 
-	pci_for_each_dev(dev) {
+	init_libpci();
+
+	for(dev=pacc->devices; dev; dev=dev->next) {	/* Iterate over all devices */
 
 		const __kgi_u32_t *check = signatures;
 		__kgi_u32_t signature = 
-			PCICFG_SIGNATURE(dev->vendor, dev->device);
+			PCICFG_SIGNATURE(dev->vendor_id, dev->device_id);
 
 		KRN_DEBUG(2, "scanning device %x %x", 
-			dev->vendor, dev->device);
+			dev->vendor_id, dev->device_id);
 
 		while (*check && (*check != signature)) {
 
@@ -277,8 +294,7 @@ KRN_DEBUG(2,"starting at %.8x", *addr);
 
 		if (*check && (*check == signature)) {
 
-			*addr = PCICFG_VADDR(dev->bus->number, 
-				PCI_SLOT(dev->devfn), PCI_FUNC(dev->devfn));
+			*addr = PCICFG_VADDR(dev->bus, dev->dev, dev->func);
 			KRN_DEBUG(1, "found device %.8x at %.8x", 
 				signature, *addr);
 			return 0;
@@ -301,21 +317,17 @@ KRN_DEBUG(2,"starting at %.8x", *addr);
 
 	}
 
-	pci_for_each_dev (dev) {
+	init_libpci();
+
+	for(dev=pacc->devices; dev; dev=dev->next) {	/* Iterate over all devices */
 
 		const __kgi_u32_t *check = signatures;
-		__kgi_u32_t signature;
-		__kgi_u16_t subvendor = 0xFFFF, subdevice = 0xFFFF;
-
-		pcibios_read_config_word(dev->bus->number, dev->devfn,
-			PCI_SUBSYSTEM_VENDOR_ID, &subvendor);
-		pcibios_read_config_word(dev->bus->number, dev->devfn,
-			PCI_SUBSYSTEM_ID, &subdevice);
-
-		signature = PCICFG_SIGNATURE(subvendor, subdevice);
+		__kgi_u16_t subvendor = pci_read_word(dev, PCI_SUBSYSTEM_VENDOR_ID);
+		__kgi_u16_t subdevice = pci_read_word(dev, PCI_SUBSYSTEM_ID);
+		__kgi_u32_t signature = PCICFG_SIGNATURE(subvendor, subdevice);
 
 		KRN_DEBUG(1, "scanning device %x %x, subsystem %x %x", 
-			dev->vendor, dev->device, subvendor, subdevice);
+			dev->vendor_id, dev->device_id, subvendor, subdevice);
 
 		while (*check && (*check != signature)) {
 
@@ -324,8 +336,7 @@ KRN_DEBUG(2,"starting at %.8x", *addr);
 
 		if (*check && (*check == signature)) {
 
-			*addr = PCICFG_VADDR(dev->bus->number, 
-				PCI_SLOT(dev->devfn), PCI_FUNC(dev->devfn));
+			*addr = PCICFG_VADDR(dev->bus, dev->dev, dev->func);
 			KRN_DEBUG(1, "found device %.8x at %.8x", 
 				signature, *addr);
 			return 0;
@@ -348,10 +359,12 @@ KRN_DEBUG(2,"starting at %.8lx", *addr);
 
 	}
 
-	pci_for_each_dev(dev) {
+	init_libpci();
+
+	for(dev=pacc->devices; dev; dev=dev->next) {	/* Iterate over all devices */
 
 		const __kgi_u32_t *check = signatures;
-		__kgi_u32_t signature = dev->class >> 8;
+		__kgi_u32_t signature = dev->device_class;
 
 		KRN_DEBUG(2, "scanning device with class %.8x", signature);
 
@@ -361,12 +374,10 @@ KRN_DEBUG(2,"starting at %.8lx", *addr);
 		}
 
 		if (*check && (*check == signature)) {
-			*addr = PCICFG_VADDR(dev->bus->number, 
-				PCI_SLOT(dev->devfn), PCI_FUNC(dev->devfn));
+			*addr = PCICFG_VADDR(dev->bus, dev->dev, dev->func);
 			KRN_DEBUG(1, "found device %02x:%02x.%d of class %.8x "
 					"at %.8lx",
-				dev->bus->number, PCI_SLOT(dev->devfn),
-				PCI_FUNC(dev->devfn),
+				dev->bus, dev->dev, dev->func,
 				signature, *addr);
 			return 0;
 		}
@@ -376,40 +387,34 @@ KRN_DEBUG(2,"starting at %.8lx", *addr);
 }
 
 
-#define	PCIARGS	(vaddr >> 24) & 0xFF, (vaddr >> 16) & 0xFF, vaddr & 0xFF
+#define PCIDEV(vaddr) pci_get_dev(pacc, 0 /*domain*/, PCICFG_BUS(vaddr), PCICFG_DEV(vaddr), PCICFG_FN(vaddr))
 
-__kgi_u8_t  pcicfg_in8 (const pcicfg_vaddr_t vaddr)
-{
-	__kgi_u8_t tmp;
-	return pcibios_read_config_byte(PCIARGS, &tmp) ? -1 : tmp;
-}
+#define PCICFG_IN(bits, size) \
+	__kgi_u##bits##_t pcicfg_in##bits(const pcicfg_vaddr_t vaddr) \
+	{ \
+		struct pci_dev *dev = PCIDEV(vaddr); \
+		int pos = vaddr & 0xFF; \
+		__kgi_u##bits##_t retval = pci_read_##size(dev, pos); \
+		pci_free_dev(dev); \
+		return retval; \
+	}
 
-__kgi_u16_t pcicfg_in16(const pcicfg_vaddr_t vaddr)
-{
-	__kgi_u16_t tmp;
-	return pcibios_read_config_word(PCIARGS, &tmp) ? -1 : tmp;
-}
+#define PCICFG_OUT(bits, size) \
+	void pcicfg_out##bits(const __kgi_u##bits##_t val, const pcicfg_vaddr_t vaddr) \
+	{ \
+		struct pci_dev *dev = PCIDEV(vaddr); \
+		int pos = vaddr & 0xFF; \
+		pci_write_##size(dev, pos, val); \
+		pci_free_dev(dev); \
+	}
 
-__kgi_u32_t pcicfg_in32(const pcicfg_vaddr_t vaddr)
-{
-	__kgi_u32_t tmp;
-	return pcibios_read_config_dword(PCIARGS, &tmp) ? -1 : tmp;
-}
+PCICFG_IN(8, byte);
+PCICFG_IN(16, word);
+PCICFG_IN(32, long);
 
-void pcicfg_out8 (const __kgi_u8_t val, const pcicfg_vaddr_t vaddr)
-{
-	pcibios_write_config_byte(PCIARGS, val);
-}
-
-void pcicfg_out16(const __kgi_u16_t val, const pcicfg_vaddr_t vaddr)
-{
-	pcibios_write_config_word(PCIARGS, val);
-}
-
-void pcicfg_out32(const __kgi_u32_t val, const pcicfg_vaddr_t vaddr)
-{
-	pcibios_write_config_dword(PCIARGS, val);
-}
+PCICFG_OUT(8, byte);
+PCICFG_OUT(16, word);
+PCICFG_OUT(32, long);
 
 #if 0
 
