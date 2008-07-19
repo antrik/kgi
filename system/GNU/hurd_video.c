@@ -23,6 +23,7 @@
 
 #define _GNU_SOURCE
 
+#include <error.h>
 #include <stdlib.h>
 
 #include <mach.h>
@@ -44,22 +45,19 @@ xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
     err = get_privileged_ports (NULL, &device);
     if( err )
     {
-	errno = err;
-	FatalError("xf86MapVidMem() can't get_privileged_ports. (%s)\n",strerror(errno));
+	error(1, err, "xf86MapVidMem() can't get_privileged_ports");
     }
     err = device_open(device,D_READ|D_WRITE,"iopl",&iopl_dev);
     mach_port_deallocate (mach_task_self(), device);
     if( err )
     {
-	errno = err;
-	FatalError("xf86MapVidMem() can't device_open. (%s)\n",strerror(errno));
+	error(1, err, "xf86MapVidMem() can't device_open");
     }
 
     err = device_map(iopl_dev,VM_PROT_READ|VM_PROT_WRITE, Base , Size ,&iopl_mem,0);
     if( err )
     {
-	errno = err;
-	FatalError("xf86MapVidMem() can't device_map. (%s)\n",strerror(errno));
+	error(1, err, "xf86MapVidMem() can't device_map");
     }
     err = vm_map(mach_task_self(),
 		 &addr,
@@ -75,14 +73,12 @@ xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
     mach_port_deallocate(mach_task_self(),iopl_mem);
     if( err )
     {
-	errno = err;
-	FatalError("xf86MapVidMem() can't vm_map.(iopl_mem) (%s)\n",strerror(errno));
+	error(1, err, "xf86MapVidMem() can't vm_map");
     }
     mach_port_deallocate(mach_task_self(),iopl_dev);
     if( err )
     {
-	errno = err;
-	FatalError("xf86MapVidMem() can't mach_port_deallocate.(iopl_dev) (%s)\n",strerror(errno));
+	error(1, err, "xf86MapVidMem() can't mach_port_deallocate (iopl_dev)");
     }
     return (void *)addr;
 }
@@ -93,8 +89,7 @@ xf86UnMapVidMem(int ScreenNum,void *Base,unsigned long Size)
     kern_return_t err = vm_deallocate(mach_task_self(), (int)Base, Size);
     if( err )
     {
-	errno = err;
-	ErrorF("xf86UnMapVidMem: can't dealloc framebuffer space (%s)\n",strerror(errno));
+	error(0, err, "xf86UnMapVidMem: can't dealloc framebuffer space");
     }
     return;
 }
@@ -119,7 +114,7 @@ int
 xf86EnableIO()
 {
     if (ioperm(0, 0xffff, 1)) {
-	FatalError("xf86EnableIO: ioperm() failed (%s)\n", strerror(errno));
+	error(1, errno, "xf86EnableIO: ioperm() failed");
 	return 0;
     }
     ioperm(0x40,4,0); /* trap access to the timer chip */
