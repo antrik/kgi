@@ -49,10 +49,7 @@
 #define	DEBUG_LEVEL	0
 #endif
 
-#include <linux/config.h>
-#include <linux/version.h>
 #include "kgi/config.h"
-#include <linux/kernel.h>
 
 #define	KGI_SYS_NEED_IO
 #include <kgi/kgii.h>
@@ -61,16 +58,12 @@
 #define	EOK 0
 #define	__KRN_BUF_SIZE	1024
 
-#if ((HOST_OS == HOST_OS_Linux) )
-#	define	__KGIM_HAS_STDARGS
-#	define	__KGIM_HAS_LIBC
-#	if defined(__KERNEL__) || defined(__MODULE__) || defined(_KERNEL) || defined(_MODULE)
-#		define	PRINT	printk
-#	else
-#		define	PRINT	printf
-#	endif
-#	include <stdarg.h>
-#endif
+#define __KGIM_HAS_STDARGS
+#define PRINT printf
+#include <stdarg.h>
+#include <stdio.h>
+#define KERN_ERR "KGI error at "
+#define KERN_NOTICE "KGI notice: "
 
 #ifdef	KRN_DEBUG_ANSI_CPP
 void __krn_ansi_debug(int level, const char *fmt, ...)
@@ -481,50 +474,3 @@ void irq_free_line(irq_line_t *irq)
 	free_irq(irq->line, irq);
 	KRN_DEBUG(2, "irq_free_line('%s', line %i)", irq->name, irq->line);
 }
-
-/*
-**	exported symbols
-*/
-#ifdef	EXPORT_SYMTAB
-#include <linux/config.h>
-#include <linux/module.h>
-
-/*	debugging services
-*/
-#ifdef	KRN_DEBUG_ANSI_CPP
-EXPORT_SYMBOL(__krn_ansi_debug);
-EXPORT_SYMBOL(__krn_ansi_error);
-#endif
-#ifdef	KRN_DEBUG_GNU_CPP
-EXPORT_SYMBOL(__krn_gnu_debug);
-EXPORT_SYMBOL(__krn_gnu_error);
-#endif
-EXPORT_SYMBOL(__krn_notice);
-
-/*	I/O services
-*/
-EXPORT_SYMBOL(io_alloc_region);
-EXPORT_SYMBOL(io_check_region);
-EXPORT_SYMBOL(io_claim_region);
-EXPORT_SYMBOL(io_free_region);
-
-EXPORT_SYMBOL(irq_claim_line);
-EXPORT_SYMBOL(irq_free_line);
-
-EXPORT_SYMBOL(mem_alloc_region);
-EXPORT_SYMBOL(mem_check_region);
-EXPORT_SYMBOL(mem_claim_region);
-EXPORT_SYMBOL(mem_free_region);
-
-EXPORT_SYMBOL(pcicfg_find_class);
-EXPORT_SYMBOL(pcicfg_find_device);
-EXPORT_SYMBOL(pcicfg_find_subsystem);
-
-EXPORT_SYMBOL(pcicfg_in8);
-EXPORT_SYMBOL(pcicfg_in16);
-EXPORT_SYMBOL(pcicfg_in32);
-EXPORT_SYMBOL(pcicfg_out8);
-EXPORT_SYMBOL(pcicfg_out16);
-EXPORT_SYMBOL(pcicfg_out32);
-
-#endif	/* #ifdef EXPORT_SYMTAB */
