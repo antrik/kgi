@@ -242,6 +242,8 @@ mem_vaddr_t mem_alloc_region(mem_region_t *r)
 	return NULL;
 }
 
+#endif
+
 /*
 **	PCI configuration space
 */
@@ -441,6 +443,8 @@ void pcicfg_out32(const __kgi_u32_t val, const pcicfg_vaddr_t vaddr)
 	pcibios_write_config_dword(PCIARGS, val);
 #endif
 }
+
+#if 0
 
 /*
 **	irq handling
