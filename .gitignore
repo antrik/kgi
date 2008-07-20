@@ -1,3 +1,4 @@
 *.o
 Makefile
 *-timings.c
+1x64sg-VANDA
