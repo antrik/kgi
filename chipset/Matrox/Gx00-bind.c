@@ -486,9 +486,9 @@ static kgi_error_t mgag_chipset_init_module(mgag_chipset_t *mgag,
 	mgag->chipset.vendor_id = pcicfg_in16(pcidev + PCI_VENDOR_ID);
 	mgag->chipset.device_id = pcicfg_in16(pcidev + PCI_DEVICE_ID);
 
-	mgag->pci.Command	= pcicfg_in32(pcidev + PCI_COMMAND);
-	mgag->pci.LatTimer	= pcicfg_in32(pcidev + PCI_LATENCY_TIMER);
-	mgag->pci.IntLine	= pcicfg_in32(pcidev + PCI_INTERRUPT_LINE);
+	mgag->pci.Command	= pcicfg_in16(pcidev + PCI_COMMAND);
+	mgag->pci.LatTimer	= pcicfg_in8(pcidev + PCI_LATENCY_TIMER);
+	mgag->pci.IntLine	= pcicfg_in8(pcidev + PCI_INTERRUPT_LINE);
 	mgag->pci.BaseAddr0	= pcicfg_in32(pcidev + PCI_BASE_ADDRESS_0);
 	mgag->pci.BaseAddr1	= pcicfg_in32(pcidev + PCI_BASE_ADDRESS_1);
 	mgag->pci.BaseAddr2	= pcicfg_in32(pcidev + PCI_BASE_ADDRESS_2);
