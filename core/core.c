@@ -2,6 +2,8 @@
 
 #include "kgi/kgi.h"
 
+extern int init_module(void);
+
 kgi_s_t kgi_register_display(kgi_display_t *dpy, kgi_u_t id)
 {
 	fprintf(stderr, "kgi_register_display(dpy=%p, id=%i)\n", dpy, id);
@@ -15,5 +17,7 @@ void    kgi_unregister_display(kgi_display_t *dpy)
 
 int main(void)
 {
+	init_module();
+
 	return 0;
 }
