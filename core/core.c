@@ -3,6 +3,7 @@
 #include "kgi/kgi.h"
 
 extern int init_module(void);
+extern void cleanup_module(void);
 
 kgi_s_t kgi_register_display(kgi_display_t *dpy, kgi_u_t id)
 {
@@ -19,5 +20,6 @@ int main(void)
 {
 	init_module();
 
+	cleanup_module();
 	return 0;
 }
