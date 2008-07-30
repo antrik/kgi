@@ -228,13 +228,8 @@ typedef struct
 /*	These may be OS dependent, and have to be supplied by the OS/kernel
 **	layer. As they aren't performance critical either, a call doesn't hurt.
 */
-#if 0
 extern __kgi_error_t  irq_claim_line(irq_line_t *irq);
 extern void irq_free_line(irq_line_t *irq);
-#endif
-#include <error.h>
-#define irq_claim_line(x) (error_at_line(1, 0, __FILE__, __LINE__, "irq_claim_line() not implemented"), 0)
-#define irq_free_line(x) error_at_line(1, 0, __FILE__, __LINE__, "irq_free_line() not implemented")
 
 #endif	/* #ifdef __KGI_SYS_IO_HAS_IRQ	*/
 

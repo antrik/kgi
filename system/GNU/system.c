@@ -448,3 +448,14 @@ void irq_free_line(irq_line_t *irq)
 }
 
 #endif
+
+#include "kgi/errno.h"
+
+__kgi_error_t irq_claim_line(irq_line_t *irq)
+{
+	return KGI_NOT_IMPLEMENTED;
+}
+
+void irq_free_line(irq_line_t *irq)
+{
+}
