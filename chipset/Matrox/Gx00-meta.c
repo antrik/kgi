@@ -4481,9 +4481,9 @@ void mgag_chipset_done(mgag_chipset_t *mgag, mgag_chipset_io_t *mgag_io,
   vga_text_chipset_done(&(mgag->vga), &(mgag_io->vga), options);
 
   /* Finally restoring PCI config regs (saved by the binding driver) */
-  pcicfg_out32(mgag->pci.Command, pcidev + PCI_COMMAND);
-  pcicfg_out32(mgag->pci.LatTimer, pcidev + PCI_LATENCY_TIMER);
-  pcicfg_out32(mgag->pci.IntLine, pcidev + PCI_INTERRUPT_LINE);
+  pcicfg_out16(mgag->pci.Command, pcidev + PCI_COMMAND);
+  pcicfg_out8(mgag->pci.LatTimer, pcidev + PCI_LATENCY_TIMER);
+  pcicfg_out8(mgag->pci.IntLine, pcidev + PCI_INTERRUPT_LINE);
 
   PCICFG_SET_BASE32(mgag->pci.BaseAddr0, pcidev + PCI_BASE_ADDRESS_0);
   PCICFG_SET_BASE32(mgag->pci.BaseAddr1, pcidev + PCI_BASE_ADDRESS_1);
