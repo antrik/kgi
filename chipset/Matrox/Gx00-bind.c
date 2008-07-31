@@ -823,7 +823,9 @@ static void mgag_chipset_done_module(mgag_chipset_t *mgag,
 	mem_free_region(&mgag_io->iload);
 	mem_free_region(&mgag_io->fb);
 	mem_free_region(&mgag_io->control);
+#if 0
 	mem_free_region(&mgag_io->text16fb);
+#endif
 
 	KRN_NOTICE("%s %s driver removed.", 
 		mgag->chipset.vendor, mgag->chipset.model);
