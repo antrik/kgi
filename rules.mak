@@ -22,16 +22,16 @@ distclean: clean
 %-monitor.o:
 	$(LD) -r $(LDFLAGS) -o $@ $^
 
-clock/%-fixed.o: clock/%.spec
+clock/%-fixed.o: clock/%.spec clock/fixed-bind.c
 	$(CC) $(CFLAGS) -c -o $@ -DFIXED_CLOCK_SPEC=\"$<\" clock/fixed-bind.c
 
-board/%-board.o: board/%.spec
+board/%-board.o: board/%.spec system/${SYSTEM}/board-bind.c
 	$(CC) $(CFLAGS) -c -o $@ -DBOARD_SPEC=\"$<\" system/${SYSTEM}/board-bind.c
 
-monitor/%-monosync.o: monitor/%.spec
+monitor/%-monosync.o: monitor/%.spec system/${SYSTEM}/monitor-monosync.c
 	$(CC) $(CFLAGS) -c -o $@ -DMONITOR_SPEC=\"$<\" system/${SYSTEM}/monitor-monosync.c
 
-monitor/%-crt.o: monitor/%.spec
+monitor/%-crt.o: monitor/%.spec system/${SYSTEM}/monitor-crt.c
 	$(CC) $(CFLAGS) -c -o $@ -DMONITOR_SPEC=\"$<\" system/${SYSTEM}/monitor-crt.c
 
 system/$(SYSTEM)/%.o: system/$(SYSTEM)/%.c
