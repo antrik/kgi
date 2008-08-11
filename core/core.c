@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "kgi/module.h"
 #include "kgi/kgi.h"
 
 extern int init_module(void);
@@ -64,6 +65,18 @@ void unsetmode(void)
 	(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
 }
 
+#include "chipset/Matrox/Gx00-meta.h"
+
+void draw_crap(void)
+{
+	const kgim_display_t *dpy = (kgim_display_t *)display;
+	const mgag_chipset_io_t *mgag_io = (mgag_chipset_io_t *)dpy->subsystem[KGIM_SUBSYSTEM_chipset].meta_io;
+	char *ptr;
+
+	for(ptr = (char *)mgag_io->fb.base_virt; ptr < (char *)mgag_io->fb.base_virt + mgag_io->fb.size; ++ptr)
+		*ptr = ((int)ptr) & 0xff;
+}
+
 int main(void)
 {
 	init_module();
@@ -74,6 +87,10 @@ int main(void)
 	setmode();
 
 	printf("setmode() complete; press <return>.\n"); getchar();
+
+	draw_crap();
+
+	printf("draw_crap() complete; press <return>.\n"); getchar();
 
 	unsetmode();
 
