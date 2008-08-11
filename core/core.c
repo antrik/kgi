@@ -1,5 +1,9 @@
 #include <assert.h>
+#include <errno.h>
+#include <error.h>
+#include <malloc.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "kgi/kgi.h"
 
@@ -21,12 +25,50 @@ void    kgi_unregister_display(kgi_display_t *dpy)
 	display=NULL;
 }
 
+void setmode(void)
+{
+	kgi_mode_t *mode;
+
+	mode=malloc(sizeof (kgi_mode_t));
+	if(!mode)
+		error_at_line(1, errno, __FILE__, __LINE__, "setmode()");
+	memset(mode, 0, sizeof (kgi_mode_t));
+
+	mode->revision=KGI_MODE_REVISION;
+
+	mode->dev_mode=malloc(display->mode_size);
+	if(!mode->dev_mode)
+		error_at_line(1, errno, __FILE__, __LINE__, "setmode()");
+
+	mode->images=1;
+
+	mode->img[0].fam |= KGI_AM_COLORS;
+	mode->img[0].bpfa[0] = 5;
+	mode->img[0].bpfa[1] = 6;
+	mode->img[0].bpfa[2] = 5;
+	mode->img[0].bpfa[3] = 0;
+	mode->img[0].frames = 1;
+	mode->img[0].size.x = 640;
+	mode->img[0].size.y = 480;
+	mode->img[0].virt.x = 640;
+	mode->img[0].virt.y = 480;
+
+	(display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
+
+	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
+	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
+}
+
 int main(void)
 {
 	init_module();
 	assert(display);
 
 	printf("Init complete; press <return>.\n"); getchar();
+
+	setmode();
+
+	printf("setmode() complete; press <return>.\n"); getchar();
 
 	cleanup_module();
 	assert(!display);
