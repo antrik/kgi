@@ -25,10 +25,10 @@ void    kgi_unregister_display(kgi_display_t *dpy)
 	display=NULL;
 }
 
+static kgi_mode_t *mode;
+
 void setmode(void)
 {
-	kgi_mode_t *mode;
-
 	mode=malloc(sizeof (kgi_mode_t));
 	if(!mode)
 		error_at_line(1, errno, __FILE__, __LINE__, "setmode()");
@@ -59,6 +59,11 @@ void setmode(void)
 	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
 }
 
+void unsetmode(void)
+{
+	(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
+}
+
 int main(void)
 {
 	init_module();
@@ -69,6 +74,10 @@ int main(void)
 	setmode();
 
 	printf("setmode() complete; press <return>.\n"); getchar();
+
+	unsetmode();
+
+	printf("unsetmode() complete; press <return>.\n"); getchar();
 
 	cleanup_module();
 	assert(!display);
