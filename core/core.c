@@ -26,6 +26,8 @@ int main(void)
 	init_module();
 	assert(display);
 
+	printf("Init complete; press <return>.\n"); getchar();
+
 	cleanup_module();
 	assert(!display);
 	return 0;
