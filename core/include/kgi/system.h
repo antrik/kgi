@@ -109,6 +109,8 @@
 #			include <kgi/io.h>
 #			if (HOST_OS == HOST_OS_Linux)
 #				include <linux/pci.h>
+#			elif (HOST_OS == HOST_OS_GNU)
+#				include <pci/pci.h>
 #			else
 #				include <kgi/pci/pci.h>
 #			endif
