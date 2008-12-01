@@ -49,11 +49,11 @@
 #define	DEBUG_LEVEL	1
 #endif
 
+#include <stdlib.h>
+
 #include "kgi/config.h"
 
 #include <kgi/module.h>
-
-#include <stdlib.h>
 
 kgi_u_t kgim_attr_bits(const kgi_u8_t *bpa)
 {

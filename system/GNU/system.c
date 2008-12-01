@@ -56,6 +56,8 @@
 #define KERN_ERR "KGI error at "
 #define KERN_NOTICE "KGI notice: "
 
+#include <pci/pci.h>
+
 #include "kgi/config.h"
 
 #define	KGI_SYS_NEED_IO
@@ -241,8 +243,6 @@ mem_vaddr_t mem_alloc_region(mem_region_t *r)
 /*
 **	PCI configuration space
 */
-
-#include <pci/pci.h>
 
 static struct pci_access *pacc=NULL;
 
