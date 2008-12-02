@@ -1,6 +1,8 @@
+#include <argp.h>
 #include <assert.h>
 #include <errno.h>
 #include <error.h>
+#include <hurd/trivfs.h>
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
@@ -77,26 +79,82 @@ void draw_crap(void)
 		*ptr = ((int)ptr) & 0xff;
 }
 
-int main(void)
+/* translator stuff */
+
+int trivfs_fstype = FSTYPE_DEV;    /* or maybe _MISC?... */
+int trivfs_fsid = 0;    /* let libtrivfs set it */
+
+int trivfs_support_read = 0;
+int trivfs_support_write = 0;
+int trivfs_support_exec = 0;
+
+int trivfs_allow_open = 0;
+
+void trivfs_modify_stat(struct trivfs_protid *cred, io_statbuf_t *st)
 {
+}
+
+/* someone asks us to die */
+error_t trivfs_goaway(struct trivfs_control *cntl, int flags)
+{
+	const int protid_users = ports_count_class(cntl->protid_class);
+	const int force = flags & FSYS_GOAWAY_FORCE;
+
+	/* does our live have a meaning yet? */
+	if(protid_users && !force) {
+		/* yeah, have to toil a bit longer -> blow it off */
+		ports_enable_class(cntl->protid_class);
+		return EBUSY;
+	}
+	/* nope, that was it */
+	cleanup_module();    /* "...as though it never existed..." */
+	exit(0);    /* "...now I will just say goodbye" */
+}
+
+static struct argp kgi_argp = {
+	.options = NULL,
+	.parser = NULL,
+	.args_doc = NULL,
+	.doc = "A server providing graphics hardware access"
+};
+
+int main(int argc, char *argv[])
+{
+	mach_port_t bootstrap;
+	struct trivfs_control *control;
+	error_t err;
+
+	argp_parse(&kgi_argp, argc, argv, 0, NULL, NULL);
+
 	init_module();
 	assert(display);
 
-	printf("Init complete; press <return>.\n"); getchar();
+	task_get_bootstrap_port(mach_task_self(), &bootstrap);
+	if(bootstrap == MACH_PORT_NULL) {    /* not started as translator */
+		printf("Init complete; press <return>.\n"); getchar();
 
-	setmode();
+		setmode();
 
-	printf("setmode() complete; press <return>.\n"); getchar();
+		printf("setmode() complete; press <return>.\n"); getchar();
 
-	draw_crap();
+		draw_crap();
 
-	printf("draw_crap() complete; press <return>.\n"); getchar();
+		printf("draw_crap() complete; press <return>.\n"); getchar();
 
-	unsetmode();
+		unsetmode();
 
-	printf("unsetmode() complete; press <return>.\n"); getchar();
+		printf("unsetmode() complete; press <return>.\n"); getchar();
 
-	cleanup_module();
-	assert(!display);
-	return 0;
+		cleanup_module();
+		assert(!display);
+		return 0;
+	}
+
+	err = trivfs_startup(bootstrap, 0, NULL, NULL, NULL, NULL, &control);
+	mach_port_deallocate(mach_task_self(), bootstrap);
+	if(err)
+		error(2, err, "trivfs_startup");
+	
+	ports_manage_port_operations_one_thread(control->pi.bucket, trivfs_demuxer, 0);
+	return 0;    /* not reached */
 }

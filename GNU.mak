@@ -1,6 +1,7 @@
 CFLAGS:=-Wall -O2 -D__KERNEL__ -D__MODULE__ \
     -include core/include/kgi/config.h -Icore/include -Iinclude -I. \
     -fno-strict-aliasing \
+    -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE \
     $(CFLAGS)
 
 MODS+=system/$(SYSTEM)/kgim-0.9-mod.o
