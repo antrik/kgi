@@ -99,6 +99,7 @@ error_t trivfs_goaway(struct trivfs_control *cntl, int flags)
 {
 	const int protid_users = ports_count_class(cntl->protid_class);
 	const int force = flags & FSYS_GOAWAY_FORCE;
+	const int nosync = flags & FSYS_GOAWAY_NOSYNC;
 
 	/* does our live have a meaning yet? */
 	if(protid_users && !force) {
@@ -107,7 +108,8 @@ error_t trivfs_goaway(struct trivfs_control *cntl, int flags)
 		return EBUSY;
 	}
 	/* nope, that was it */
-	cleanup_module();    /* "...as though it never existed..." */
+	if(!nosync)    /* we use a liberal interpretation of NOSYNC here */
+		cleanup_module();    /* "...as though it never existed..." */
 	exit(0);    /* "...now I will just say goodbye" */
 }
 
