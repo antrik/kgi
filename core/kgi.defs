@@ -1,0 +1,32 @@
+subsystem kgi 99000;
+
+#include <hurd/hurd_types.defs>
+
+type kgi_image_mode_t = struct[172] of char;
+
+#ifdef KGI_IMPORTS
+KGI_IMPORTS
+#endif
+
+routine kgi_set_images (
+	io_object: io_t;
+	images: int);
+
+routine kgi_set_image_mode (
+	io_object: io_t;
+	image: int;
+	mode: kgi_image_mode_t);
+
+routine kgi_get_image_mode (
+	io_object: io_t;
+	image: int;
+	out mode: kgi_image_mode_t);
+
+routine kgi_check_mode (
+	io_object: io_t);
+
+routine kgi_set_mode (
+	io_object: io_t);
+
+routine kgi_unset_mode (
+	io_object: io_t);

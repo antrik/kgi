@@ -12,7 +12,15 @@ system/$(SYSTEM)/kgim-0.9-mod.o: system/$(SYSTEM)/kgim-0.9.o system/$(SYSTEM)/sy
 system/$(SYSTEM)/system.o system/$(SYSTEM)/hurd_video.o: system/$(SYSTEM)/hurd_video.h
 
 MODS+=core/core-mod.o
-OBJS+=core/core.o
+OBJS+=core/core.o core/kgiServer.o
+CLEANFILES+=core/kgiServer.h core/kgiUser.h core/kgiServer.c core/kgiUser.c
+
+core/core-mod.o: core/core.o core/kgiServer.o
+
+core/core.o: core/kgiServer.h
+
+%Server.h %User.h %Server.c %User.c: %.defs %mutations.h
+	mig -imacros $*mutations.h -sheader $*Server.h -header $*User.h -server $*Server.c -user $*User.c $<
 
 AWK?=awk
 

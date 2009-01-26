@@ -120,6 +120,38 @@ static struct argp kgi_argp = {
 	.doc = "A server providing graphics hardware access"
 };
 
+#include "kgiServer.h"
+
+kern_return_t kgi_set_images(trivfs_protid_t io_object, int images)
+{
+	return 0;
+}
+
+kern_return_t kgi_set_image_mode(trivfs_protid_t io_object, int image, kgi_image_mode_t mode)
+{
+	return 0;
+}
+
+kern_return_t kgi_get_image_mode(trivfs_protid_t io_object, int image, kgi_image_mode_t *mode)
+{
+	return 0;
+}
+
+kern_return_t kgi_check_mode(trivfs_protid_t io_object)
+{
+	return 0;
+}
+
+kern_return_t kgi_set_mode(trivfs_protid_t io_object)
+{
+	return 0;
+}
+
+kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
+{
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	mach_port_t bootstrap;
