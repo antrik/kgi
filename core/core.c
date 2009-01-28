@@ -153,6 +153,12 @@ kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
 	return 0;
 }
 
+static int kgi_demuxer (mach_msg_header_t *inp, mach_msg_header_t *outp)
+{
+	extern int kgi_server (mach_msg_header_t *inp, mach_msg_header_t *outp);
+	return kgi_server(inp, outp) || trivfs_demuxer(inp, outp);
+}
+
 int main(int argc, char *argv[])
 {
 	mach_port_t bootstrap;
@@ -190,6 +196,6 @@ int main(int argc, char *argv[])
 	if(err)
 		error(2, err, "trivfs_startup");
 	
-	ports_manage_port_operations_one_thread(control->pi.bucket, trivfs_demuxer, 0);
+	ports_manage_port_operations_one_thread(control->pi.bucket, kgi_demuxer, 0);
 	return 0;    /* not reached */
 }
