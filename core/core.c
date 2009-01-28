@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <error.h>
+#include <fcntl.h>
 #include <hurd/trivfs.h>
 #include <malloc.h>
 #include <stdio.h>
@@ -88,7 +89,7 @@ int trivfs_support_read = 0;
 int trivfs_support_write = 0;
 int trivfs_support_exec = 0;
 
-int trivfs_allow_open = 0;
+int trivfs_allow_open = O_READ | O_WRITE;    /* we don't support the standard read()/write() operations, but our custom RPCs require read/write permissions */
 
 void trivfs_modify_stat(struct trivfs_protid *cred, io_statbuf_t *st)
 {
