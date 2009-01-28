@@ -22,6 +22,14 @@ core/core.o: core/kgiServer.h
 %Server.h %User.h %Server.c %User.c: %.defs %mutations.h
 	mig -imacros $*mutations.h -sheader $*Server.h -header $*User.h -server $*Server.c -user $*User.c $<
 
+OBJS+=rpctest.o
+CLEANFILES+=rpctest
+
+rpctest: core/rpctest.o core/kgiUser.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+
+core/rpctest.o: core/kgiUser.h
+
 AWK?=awk
 
 %-mod.o: %.o

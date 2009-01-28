@@ -4,3 +4,4 @@ Makefile
 *Server.[ch]
 *User.[ch]
 1x64sg-VANDA
+rpctest

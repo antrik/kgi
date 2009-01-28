@@ -125,31 +125,37 @@ static struct argp kgi_argp = {
 
 kern_return_t kgi_set_images(trivfs_protid_t io_object, int images)
 {
+	fprintf(stderr, "kgi_set_images(%d)\n", images);
 	return 0;
 }
 
 kern_return_t kgi_set_image_mode(trivfs_protid_t io_object, int image, kgi_image_mode_t mode)
 {
+	fprintf(stderr, "kgi_set_image_mode(%d, {flags=%d virt.x=%d virt.y=%d size.x=%d size.y=%d frames=%d fam=%d bpfa[0]=%d bpfa[1]=%d bpfa[2]=%d bpfa[3]=%d})\n", image, mode.flags, mode.virt.x, mode.virt.y, mode.size.x, mode.size.y, mode.frames, mode.fam, mode.bpfa[0], mode.bpfa[1], mode.bpfa[2], mode.bpfa[3]);
 	return 0;
 }
 
 kern_return_t kgi_get_image_mode(trivfs_protid_t io_object, int image, kgi_image_mode_t *mode)
 {
+	fprintf(stderr, "kgi_get_image_mode(%d)\n", image);
 	return 0;
 }
 
 kern_return_t kgi_check_mode(trivfs_protid_t io_object)
 {
+	fprintf(stderr, "kgi_check_mode()\n");
 	return 0;
 }
 
 kern_return_t kgi_set_mode(trivfs_protid_t io_object)
 {
+	fprintf(stderr, "kgi_set_mode()\n");
 	return 0;
 }
 
 kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
 {
+	fprintf(stderr, "kgi_unset_mode()\n");
 	return 0;
 }
 
