@@ -34,8 +34,6 @@ int main(int argc, char *argv[])
 	mode.frames = 1;
 	mode.size.x = 640;
 	mode.size.y = 480;
-	mode.virt.x = 640;
-	mode.virt.y = 480;
 
 	err = HURD_DPORT_USE(kgi_fd, kgi_set_image_mode(port, 1, mode));
 	if (err)
