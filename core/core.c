@@ -123,6 +123,50 @@ static struct argp kgi_argp = {
 
 #include "kgiServer.h"
 
+/*
+ * All the state is managed per client connection. Thus each client can follow
+ * the protocol, without interference from others. However, there is no
+ * protection against multiple clients setting a mode -- the latest will simply
+ * overwrite the earlier. Perhaps we should make open() exclusive in the first
+ * place?
+ *
+ * Also, if the client closes the connection without unsetting the mode first,
+ * the mode remains active, but we loose all reference to the state. This seems
+ * wrong. Probably we should either unset the mode on client exit, or make
+ * these things global after all...
+ */
+struct po_state {
+	kgi_mode_t mode;
+	enum {
+		KGI_STATUS_NONE=0,
+		KGI_STATUS_CHECKED,
+		KGI_STATUS_SET
+	} status;
+};
+
+error_t open_hook(struct trivfs_peropen *po)
+{
+	struct po_state *state;
+
+	po->hook = state = malloc(sizeof *state);
+	if(!state)
+		return ENOMEM;
+	memset(state, 0, sizeof *state);
+
+	return 0;
+}
+
+void close_hook(struct trivfs_peropen *po)
+{
+	struct po_state *state = po->hook;
+
+	free(state->mode.dev_mode);
+	free(state);
+}
+
+error_t (*trivfs_peropen_create_hook) (struct trivfs_peropen *) = open_hook;
+void (*trivfs_peropen_destroy_hook) (struct trivfs_peropen *) = close_hook;
+
 kern_return_t kgi_set_images(trivfs_protid_t io_object, int images)
 {
 	if (!io_object)
@@ -131,6 +175,20 @@ kern_return_t kgi_set_images(trivfs_protid_t io_object, int images)
 		return EBADF;
 
 	fprintf(stderr, "kgi_set_images(%d)\n", images);
+
+	{
+		struct po_state *const state = io_object->po->hook;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_NONE)
+			return EPROTO;
+
+		/* we do not actually support multiple images -- hail the glorious overengineering! */
+		if (images != 1)
+			return EINVAL;
+
+		state->mode.images = images;
+	}
 
 	return 0;
 }
@@ -144,6 +202,16 @@ kern_return_t kgi_set_image_mode(trivfs_protid_t io_object, int image, kgi_image
 
 	fprintf(stderr, "kgi_set_image_mode(%d, {flags=%d virt.x=%d virt.y=%d size.x=%d size.y=%d frames=%d fam=%d bpfa[0]=%d bpfa[1]=%d bpfa[2]=%d bpfa[3]=%d})\n", image, mode.flags, mode.virt.x, mode.virt.y, mode.size.x, mode.size.y, mode.frames, mode.fam, mode.bpfa[0], mode.bpfa[1], mode.bpfa[2], mode.bpfa[3]);
 
+	{
+		struct po_state *const state = io_object->po->hook;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_NONE || !state->mode.images)
+			return EPROTO;
+
+		memcpy(&state->mode.img[0], &mode, sizeof mode);
+	}
+
 	return 0;
 }
 
@@ -156,11 +224,24 @@ kern_return_t kgi_get_image_mode(trivfs_protid_t io_object, int image, kgi_image
 
 	fprintf(stderr, "kgi_get_image_mode(%d)\n", image);
 
+	{
+		struct po_state *const state = io_object->po->hook;
+
+		/* first things first... */
+		if (!state->mode.images)
+			return EPROTO;
+
+		memcpy(mode, &state->mode.img[0], sizeof (*mode));
+	}
+
 	return 0;
 }
 
 kern_return_t kgi_check_mode(trivfs_protid_t io_object)
 {
+	assert(display);
+	assert(display->CheckMode);
+
 	if (!io_object)
 		return EOPNOTSUPP;
 	if (!(io_object->po->openmodes & O_WRITE))
@@ -168,11 +249,31 @@ kern_return_t kgi_check_mode(trivfs_protid_t io_object)
 
 	fprintf(stderr, "kgi_check_mode()\n");
 
+	{
+		struct po_state *const state = io_object->po->hook;
+		kgi_mode_t *const mode = &state->mode;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_NONE || !state->mode.images)
+			return EPROTO;
+
+		mode->dev_mode = malloc(display->mode_size);
+		if(!mode->dev_mode)
+			error_at_line(1, errno, __FILE__, __LINE__, "setmode()");
+
+		(display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
+
+		state->status = KGI_STATUS_CHECKED;
+	}
+
 	return 0;
 }
 
 kern_return_t kgi_set_mode(trivfs_protid_t io_object)
 {
+	assert(display);
+	assert(display->SetMode);
+
 	if (!io_object)
 		return EOPNOTSUPP;
 	if (!(io_object->po->openmodes & O_WRITE))
@@ -180,17 +281,50 @@ kern_return_t kgi_set_mode(trivfs_protid_t io_object)
 
 	fprintf(stderr, "kgi_set_mode()\n");
 
+	{
+		struct po_state *const state = io_object->po->hook;
+		kgi_mode_t *const mode = &state->mode;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_CHECKED)
+			return EPROTO;
+
+		(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
+		(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
+
+		state->status = KGI_STATUS_SET;
+	}
+
 	return 0;
 }
 
 kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
 {
+	assert(display);
+	assert(display->UnsetMode);
+
 	if (!io_object)
 		return EOPNOTSUPP;
 	if (!(io_object->po->openmodes & O_WRITE))
 		return EBADF;
 
 	fprintf(stderr, "kgi_unset_mode()\n");
+
+	{
+		struct po_state *const state = io_object->po->hook;
+		kgi_mode_t *const mode = &state->mode;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_SET && state->status != KGI_STATUS_CHECKED)
+			return EPROTO;
+
+		if (state->status == KGI_STATUS_SET)
+			(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
+
+		free(mode->dev_mode);
+		memset(mode, 0, sizeof (*mode));
+		state->status = KGI_STATUS_NONE;
+	}
 
 	return 0;
 }
