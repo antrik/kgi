@@ -68,15 +68,30 @@ void unsetmode(void)
 	(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
 }
 
-#include "chipset/Matrox/Gx00-meta.h"
+kgi_mmio_region_t *get_fb(const kgi_mode_t *mode)
+{
+	int res_i;
+
+	assert(mode);
+
+	for(res_i = 0; res_i < __KGI_MAX_NR_RESOURCES; ++res_i) {
+		const kgi_resource_t *res = mode->resource[res_i];
+		if (res && res->type == KGI_RT_MMIO_FRAME_BUFFER)
+			return (kgi_mmio_region_t *)res;
+	}
+
+	return NULL;    /* not found */
+}
 
 void draw_crap(void)
 {
-	const kgim_display_t *dpy = (kgim_display_t *)display;
-	const mgag_chipset_io_t *mgag_io = (mgag_chipset_io_t *)dpy->subsystem[KGIM_SUBSYSTEM_chipset].meta_io;
+	const kgi_mmio_region_t *fb = get_fb(mode);
 	char *ptr;
 
-	for(ptr = (char *)mgag_io->fb.base_virt; ptr < (char *)mgag_io->fb.base_virt + mgag_io->fb.size; ++ptr)
+	assert(fb);
+
+	/* assuming the whole framebuffer is mapped in the aperture */
+	for(ptr = (char *)fb->win.virt; ptr < (char *)fb->win.virt + fb->win.size; ++ptr)
 		*ptr = ((int)ptr) & 0xff;
 }
 
