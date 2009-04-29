@@ -50,7 +50,7 @@
 #endif
 
 #define __KGIM_HAS_STDARGS
-#define PRINT printf
+#define PRINT(...) fprintf(stderr, __VA_ARGS__)
 #include <stdarg.h>
 #include <stdio.h>
 #define KERN_ERR "KGI error at "
