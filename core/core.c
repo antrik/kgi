@@ -91,12 +91,13 @@ void draw_crap(void)
 	char *ptr;
 
 	const int offs = time(NULL);
+	const int width = mode->img[0].virt.x;
 
 	assert(fb);
 
 	/* assuming the whole framebuffer is mapped in the aperture */
 	for(ptr = (char *)fb->win.virt; ptr < (char *)fb->win.virt + fb->win.size; ++ptr)
-		*ptr = ((int)ptr + offs) & 0xff;
+		*ptr = ((int)ptr + offs) % (width - 1) & 0xff;
 }
 
 /* translator stuff */
