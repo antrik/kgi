@@ -83,16 +83,20 @@ kgi_mmio_region_t *get_fb(const kgi_mode_t *mode)
 	return NULL;    /* not found */
 }
 
+#include <time.h>
+
 void draw_crap(void)
 {
 	const kgi_mmio_region_t *fb = get_fb(mode);
 	char *ptr;
 
+	const int offs = time(NULL);
+
 	assert(fb);
 
 	/* assuming the whole framebuffer is mapped in the aperture */
 	for(ptr = (char *)fb->win.virt; ptr < (char *)fb->win.virt + fb->win.size; ++ptr)
-		*ptr = ((int)ptr) & 0xff;
+		*ptr = ((int)ptr + offs) & 0xff;
 }
 
 /* translator stuff */
