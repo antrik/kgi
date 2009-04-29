@@ -149,15 +149,8 @@ static struct argp kgi_argp = {
 
 /*
  * All the state is managed per client connection. Thus each client can follow
- * the protocol, without interference from others. However, there is no
- * protection against multiple clients setting a mode -- the latest will simply
- * overwrite the earlier. Perhaps we should make open() exclusive in the first
- * place?
- *
- * Also, if the client closes the connection without unsetting the mode first,
- * the mode remains active, but we loose all reference to the state. This seems
- * wrong. Probably we should either unset the mode on client exit, or make
- * these things global after all...
+ * the protocol, without interference from others. However, only one can
+ * actually set a mode at any given time. (Enforced by checking display->mode.)
  */
 struct po_state {
 	kgi_mode_t mode;
@@ -189,8 +182,10 @@ void close_hook(struct trivfs_peropen *po)
 
 	fprintf(stderr, "KGI close()\n");
 
-	if (state->status == KGI_STATUS_SET)
+	if (state->status == KGI_STATUS_SET) {
 		(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
+		display->mode = NULL;
+	}
 
 	free(state->mode.dev_mode);
 	free(state);
@@ -321,10 +316,14 @@ kern_return_t kgi_set_mode(trivfs_protid_t io_object)
 		if (state->status != KGI_STATUS_CHECKED)
 			return EPROTO;
 
+		if (display->mode)    /* a mode was set from other client/connection */
+			return EBUSY;
+
 		(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
 		(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
 
 		state->status = KGI_STATUS_SET;
+		display->mode = mode;
 	}
 
 	return 0;
@@ -350,8 +349,10 @@ kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
 		if (state->status != KGI_STATUS_SET && state->status != KGI_STATUS_CHECKED)
 			return EPROTO;
 
-		if (state->status == KGI_STATUS_SET)
+		if (state->status == KGI_STATUS_SET) {
 			(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
+			display->mode = NULL;
+		}
 
 		free(mode->dev_mode);
 		memset(mode, 0, sizeof (*mode));
