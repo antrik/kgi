@@ -72,10 +72,6 @@ int main(int argc, char *argv[])
 	if (err)
 		error(3, err, "kgi_get_image_mode() failed");
 
-	err = HURD_DPORT_USE(kgi_fd, kgi_unset_mode(port));
-	if (err)
-		error(3, err, "kgi_unset_mode() failed");
-
 	err = close(kgi_fd);
 	if (err == -1)
 		error(2, errno, "Closing kgi node failed");

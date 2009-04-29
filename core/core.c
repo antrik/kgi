@@ -172,6 +172,8 @@ error_t open_hook(struct trivfs_peropen *po)
 {
 	struct po_state *state;
 
+	fprintf(stderr, "KGI open()\n");
+
 	po->hook = state = malloc(sizeof *state);
 	if(!state)
 		return ENOMEM;
@@ -183,6 +185,12 @@ error_t open_hook(struct trivfs_peropen *po)
 void close_hook(struct trivfs_peropen *po)
 {
 	struct po_state *state = po->hook;
+	kgi_mode_t *const mode = &state->mode;
+
+	fprintf(stderr, "KGI close()\n");
+
+	if (state->status == KGI_STATUS_SET)
+		(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
 
 	free(state->mode.dev_mode);
 	free(state);
