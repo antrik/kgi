@@ -29,10 +29,10 @@ void    kgi_unregister_display(kgi_display_t *dpy)
 	display=NULL;
 }
 
-static kgi_mode_t *mode;
-
 void setmode(void)
 {
+	kgi_mode_t *mode;
+
 	mode=malloc(sizeof (kgi_mode_t));
 	if(!mode)
 		error_at_line(1, errno, __FILE__, __LINE__, "setmode()");
@@ -61,10 +61,14 @@ void setmode(void)
 
 	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
 	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
+
+	display->mode = mode;
 }
 
 void unsetmode(void)
 {
+	kgi_mode_t *mode = display->mode;
+
 	(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
 }
 
@@ -87,11 +91,11 @@ kgi_mmio_region_t *get_fb(const kgi_mode_t *mode)
 
 void draw_crap(void)
 {
-	const kgi_mmio_region_t *fb = get_fb(mode);
+	const kgi_mmio_region_t *fb = get_fb(display->mode);
 	char *ptr;
 
 	const int offs = time(NULL);
-	const int width = mode->img[0].virt.x;
+	const int width = display->mode->img[0].virt.x;
 
 	assert(fb);
 
