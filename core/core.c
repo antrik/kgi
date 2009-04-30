@@ -161,6 +161,19 @@ struct po_state {
 	} status;
 };
 
+void unset_mode(struct po_state *state)
+{
+	kgi_mode_t *const mode = &state->mode;
+
+	if (state->status == KGI_STATUS_SET) {
+		(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
+		display->mode = NULL;
+	}
+
+	free(mode->dev_mode);
+	memset(mode, 0, sizeof (*mode));
+}
+
 error_t open_hook(struct trivfs_peropen *po)
 {
 	struct po_state *state;
@@ -178,16 +191,10 @@ error_t open_hook(struct trivfs_peropen *po)
 void close_hook(struct trivfs_peropen *po)
 {
 	struct po_state *state = po->hook;
-	kgi_mode_t *const mode = &state->mode;
 
 	fprintf(stderr, "KGI close()\n");
 
-	if (state->status == KGI_STATUS_SET) {
-		(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
-		display->mode = NULL;
-	}
-
-	free(state->mode.dev_mode);
+	unset_mode(state);
 	free(state);
 }
 
@@ -343,19 +350,12 @@ kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
 
 	{
 		struct po_state *const state = io_object->po->hook;
-		kgi_mode_t *const mode = &state->mode;
 
 		/* first things first... */
 		if (state->status != KGI_STATUS_SET && state->status != KGI_STATUS_CHECKED)
 			return EPROTO;
 
-		if (state->status == KGI_STATUS_SET) {
-			(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
-			display->mode = NULL;
-		}
-
-		free(mode->dev_mode);
-		memset(mode, 0, sizeof (*mode));
+		unset_mode(state);
 		state->status = KGI_STATUS_NONE;
 	}
 
