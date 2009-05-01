@@ -72,7 +72,7 @@ void unsetmode(void)
 	(display->UnsetMode)(display, mode->img, mode->images, mode->dev_mode);
 }
 
-kgi_mmio_region_t *get_fb(const kgi_mode_t *mode)
+kgi_mmio_region_t *get_fb(const kgi_mode_t *mode, int *resource)
 {
 	int res_i;
 
@@ -80,8 +80,11 @@ kgi_mmio_region_t *get_fb(const kgi_mode_t *mode)
 
 	for(res_i = 0; res_i < __KGI_MAX_NR_RESOURCES; ++res_i) {
 		const kgi_resource_t *res = mode->resource[res_i];
-		if (res && res->type == KGI_RT_MMIO_FRAME_BUFFER)
+		if (res && res->type == KGI_RT_MMIO_FRAME_BUFFER) {
+			if (resource)
+				*resource = res_i;
 			return (kgi_mmio_region_t *)res;
+		}
 	}
 
 	return NULL;    /* not found */
@@ -91,7 +94,7 @@ kgi_mmio_region_t *get_fb(const kgi_mode_t *mode)
 
 void draw_crap(void)
 {
-	const kgi_mmio_region_t *fb = get_fb(display->mode);
+	const kgi_mmio_region_t *fb = get_fb(display->mode, NULL);
 	char *ptr;
 
 	const int offs = time(NULL);
