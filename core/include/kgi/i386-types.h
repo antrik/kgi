@@ -49,7 +49,7 @@ typedef	unsigned int		__kgi_isochar_t;
 
 typedef int			__kgi_error_t;
 
-typedef	unsigned char 		*__kgi_virt_addr_t;
+typedef	void	 		*__kgi_virt_addr_t;
 typedef unsigned long		__kgi_phys_addr_t;
 typedef unsigned long		__kgi_bus_addr_t;
 
