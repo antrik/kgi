@@ -7,6 +7,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "kgi/module.h"
 #include "kgi/kgi.h"
@@ -89,8 +90,6 @@ kgi_mmio_region_t *get_fb(const kgi_mode_t *mode, int *resource)
 
 	return NULL;    /* not found */
 }
-
-#include <time.h>
 
 void draw_crap(void)
 {
