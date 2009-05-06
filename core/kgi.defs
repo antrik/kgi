@@ -3,6 +3,7 @@ subsystem kgi 99000;
 #include <hurd/hurd_types.defs>
 
 type kgi_image_mode_t = struct[172] of char;
+type kgic_mapper_resource_info_result_t = struct[96] of char;
 
 #ifdef KGI_IMPORTS
 KGI_IMPORTS
@@ -29,4 +30,13 @@ routine kgi_set_mode (
 	io_object: io_t);
 
 routine kgi_unset_mode (
+	io_object: io_t);
+
+/* Get resource struct with info on FB address/size etc. */
+routine kgi_get_fb_resource (
+	io_object: io_t;
+	out fb: kgic_mapper_resource_info_result_t);
+
+/* Indicate that the next io_map() should map the framebuffer */
+routine kgi_setup_mmap_fb (
 	io_object: io_t);

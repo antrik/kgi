@@ -161,6 +161,10 @@ struct po_state {
 		KGI_STATUS_CHECKED,
 		KGI_STATUS_SET
 	} status;
+	enum {
+		KGI_MMAP_NONE=0,
+		KGI_MMAP_FB
+	} mmap_mode;
 };
 
 void unset_mode(struct po_state *state)
@@ -359,6 +363,121 @@ kern_return_t kgi_unset_mode(trivfs_protid_t io_object)
 
 		unset_mode(state);
 		state->status = KGI_STATUS_NONE;
+	}
+
+	return 0;
+}
+
+kern_return_t kgi_get_fb_resource(trivfs_protid_t io_object, kgic_mapper_resource_info_result_t *fb)
+{
+	if (!io_object)
+		return EOPNOTSUPP;
+	if (!(io_object->po->openmodes & O_READ))
+		return EBADF;
+
+	fprintf(stderr, "kgi_get_fb_resource()\n");
+
+	{
+		struct po_state *const state = io_object->po->hook;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_SET && state->status != KGI_STATUS_CHECKED)
+			return EPROTO;
+
+		{
+			int res_index;
+			const kgi_mmio_region_t *fb_res = get_fb(&state->mode, &res_index);
+
+			if (!fb_res)
+				return ENXIO;
+
+			memset(fb, 0, sizeof (*fb));
+
+			strncpy(fb->name, fb_res->name, sizeof (fb->name)); fb->name[sizeof (fb->name)-1] = 0;
+			fb->resource = res_index;
+			fb->image = -1;
+			fb->type = fb_res->type;
+			fb->protection = fb_res->prot;
+
+			fb->info.mmio.access = fb_res->access;
+			fb->info.mmio.align  = fb_res->align;
+			fb->info.mmio.size   = fb_res->size;
+			fb->info.mmio.window = fb_res->win.size;
+		}
+	}
+
+	return 0;
+}
+
+kern_return_t kgi_setup_mmap_fb(trivfs_protid_t io_object)
+{
+	if (!io_object)
+		return EOPNOTSUPP;
+	if (!(io_object->po->openmodes & O_WRITE))
+		return EBADF;
+
+	fprintf(stderr, "kgi_setup_mmap_fb()\n");
+
+	{
+		struct po_state *const state = io_object->po->hook;
+
+		state->mmap_mode = KGI_MMAP_FB;
+	}
+	
+	return 0;
+}
+
+#include "system/GNU/hurd_video.h"
+
+kern_return_t trivfs_S_io_map(
+	trivfs_protid_t io_object,
+	mach_port_t reply, mach_msg_type_name_t reply_type,
+	memory_object_t *rd_obj, mach_msg_type_name_t *rd_type,
+	memory_object_t *wr_obj, mach_msg_type_name_t *wr_type)
+{
+	if (!io_object)
+		return EOPNOTSUPP;
+
+	fprintf(stderr, "trivfs_S_io_map()\n");
+
+	{
+		const int rd = io_object->po->openmodes | O_READ;
+		const int wr = io_object->po->openmodes | O_WRITE;
+		const vm_prot_t prot = (rd ? VM_PROT_READ : 0) | (wr ? VM_PROT_WRITE : 0);
+
+		struct po_state *const state = io_object->po->hook;
+
+		if(!prot)
+			return EBADF;
+
+		/* first things first... */
+		if (state->status != KGI_STATUS_SET)
+			return EPROTO;
+
+		switch (state->mmap_mode) {
+			case KGI_MMAP_NONE:
+				return EPROTO;
+
+			case KGI_MMAP_FB: {
+				const kgi_mmio_region_t *fb_res = get_fb(&state->mode, NULL);
+
+				if(!fb_res)
+					return ENXIO;
+
+				{
+					const memory_object_t fb_obj = get_fb_object(fb_res->win.phys, fb_res->win.size, prot);
+
+					*rd_obj = rd ? fb_obj : MACH_PORT_NULL;
+					*wr_obj = wr ? fb_obj : MACH_PORT_NULL;
+
+					/* if the port is used twice, make sure we have a second reference */
+					if (rd && wr)
+						mach_port_mod_refs(mach_task_self(), fb_obj, MACH_PORT_RIGHT_SEND, 1);
+
+					*rd_type = *wr_type = MACH_MSG_TYPE_MOVE_SEND;
+				}
+			}    /* case KGI_MMAP_FB */
+		}
 	}
 
 	return 0;
