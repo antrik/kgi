@@ -137,8 +137,8 @@ int main(int argc, char *argv[])
 	printf("Checked mode: flags=%d virt.x=%d virt.y=%d size.x=%d size.y=%d frames=%d fam=%d bpfa[0]=%d bpfa[1]=%d bpfa[2]=%d bpfa[3]=%d)\n", mode.flags, mode.virt.x, mode.virt.y, mode.size.x, mode.size.y, mode.frames, mode.fam, mode.bpfa[0], mode.bpfa[1], mode.bpfa[2], mode.bpfa[3]);
 
 	err = HURD_DPORT_USE(kgi_fd2, kgi_set_mode(port));
-	if (err)
-		error(0, err, "kgi_set_mode() failed");
+	if (err != EBUSY)
+		error(3, err, "kgi_set_mode()");
 
 
 	err = close(kgi_fd);
