@@ -205,7 +205,7 @@ mem_vaddr_t mem_claim_region(mem_region_t *r)
 {
 	KRN_ASSERT(r->base_virt == NULL); /* claim of claimed region? */
 
-	r->base_virt = xf86MapVidMem(0 /*ScreenNum*/, 0 /*Flags*/, r->base_io, r->size);
+	r->base_virt = mmio_map((void *)r->base_io, r->size);
 #ifndef	__i386__
 #	warning	Are we i386 specific here? CHECK THIS CODE!
 #endif
@@ -221,7 +221,7 @@ mem_vaddr_t mem_claim_region(mem_region_t *r)
 
 mem_vaddr_t mem_free_region(mem_region_t *r)
 {
-	xf86UnMapVidMem(0 /*ScreenNum*/, r->base_virt, r->size);
+	mmio_unmap(r->base_virt, r->size);
 	KRN_DEBUG(2, "mem_free_region %s, base_io %p, base_virt %p, "
 		"base_phys %p, base_bus %p", r->name, (void *) r->base_io,
 		r->base_virt, (void *) r->base_phys, (void *) r->base_bus);

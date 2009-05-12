@@ -21,15 +21,12 @@
  *
  */
 
-#define _GNU_SOURCE
-
 #include <error.h>
 #include <stdlib.h>
 
 #include <mach.h>
 #include <mach/mach4.h>
 #include <device/device.h>
-#include <mach/machine/mach_i386.h>
 #include <hurd.h>
 
 #include "hurd_video.h"
@@ -93,11 +90,7 @@ memory_object_t get_fb_object(vm_address_t addr, vm_size_t size, vm_prot_t prot)
 }
 
 
-/**************************************************************************
- * Video Memory Mapping section                                            
- ***************************************************************************/
-void * 
-xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
+void *mmio_map(void *Base, size_t Size)
 {
     memory_object_t iopl_mem;
     kern_return_t err;
@@ -119,76 +112,17 @@ xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
     mach_port_deallocate(mach_task_self(),iopl_mem);
     if( err )
     {
-	error(1, err, "xf86MapVidMem() can't vm_map");
+	error(1, err, "mmio_map(): can't vm_map");
     }
     return (void *)addr;
 }
 
-void 
-xf86UnMapVidMem(int ScreenNum,void *Base,unsigned long Size)
+void mmio_unmap(void *Base, size_t Size)
 {
     kern_return_t err = vm_deallocate(mach_task_self(), (int)Base, Size);
     if( err )
     {
-	error(0, err, "xf86UnMapVidMem: can't dealloc framebuffer space");
+	error(0, err, "mmio_unmap(): can't dealloc mmio space");
     }
     return;
 }
-
-int 
-xf86LinearVidMem()
-{
-    return(1);
-}
-
-/**************************************************************************
- * I/O Permissions section                                                 
- ***************************************************************************/
-
-#include <sys/io.h>
-
-int
-xf86EnableIO()
-{
-    if (ioperm(0, 0xffff, 1)) {
-	error(1, errno, "xf86EnableIO: ioperm() failed");
-	return 0;
-    }
-    ioperm(0x40,4,0); /* trap access to the timer chip */
-    ioperm(0x60,4,0); /* trap access to the keyboard controller */
-    return 1;
-}
-	
-void
-xf86DisableIO()
-{
-    ioperm(0,0xffff,0);
-    return;
-}
-
-/**************************************************************************
- * Interrupt Handling section                                              
- **************************************************************************/
-int 
-xf86DisableInterrupts()
-{
-    return 1;
-}
-void 
-xf86EnableInterrupts()
-{
-    return;
-}
-
-void
-xf86MapReadSideEffects(int ScreenNum, int Flags, void *Base,
-	unsigned long Size)
-{
-}
-
-int
-xf86CheckMTRR(int s)
-{
-	return 0;
-}
-
