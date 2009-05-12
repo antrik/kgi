@@ -99,28 +99,12 @@ memory_object_t get_fb_object(vm_address_t addr, vm_size_t size, vm_prot_t prot)
 void * 
 xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
 {
-    mach_port_t device,iopl_dev;
     memory_object_t iopl_mem;
     kern_return_t err;
     vm_address_t addr=(vm_address_t)0;
 
-    err = get_privileged_ports (NULL, &device);
-    if( err )
-    {
-	error(1, err, "xf86MapVidMem() can't get_privileged_ports");
-    }
-    err = device_open(device,D_READ|D_WRITE,"iopl",&iopl_dev);
-    mach_port_deallocate (mach_task_self(), device);
-    if( err )
-    {
-	error(1, err, "xf86MapVidMem() can't device_open");
-    }
+    iopl_mem = get_physmem_object();
 
-    err = device_map(iopl_dev,VM_PROT_READ|VM_PROT_WRITE, Base , Size ,&iopl_mem,0);
-    if( err )
-    {
-	error(1, err, "xf86MapVidMem() can't device_map");
-    }
     err = vm_map(mach_task_self(),
 		 &addr,
 		 Size,
@@ -136,11 +120,6 @@ xf86MapVidMem(int ScreenNum,int Flags, unsigned long Base, unsigned long Size)
     if( err )
     {
 	error(1, err, "xf86MapVidMem() can't vm_map");
-    }
-    mach_port_deallocate(mach_task_self(),iopl_dev);
-    if( err )
-    {
-	error(1, err, "xf86MapVidMem() can't mach_port_deallocate (iopl_dev)");
     }
     return (void *)addr;
 }
