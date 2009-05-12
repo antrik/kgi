@@ -5130,6 +5130,16 @@ void mgag_chipset_mode_enter(mgag_chipset_t *mgag, mgag_chipset_io_t *mgag_io,
 		MGAG_CRT_OUT8(mgag_io, mgag_mode->mgag.CRTC[i], i);
 	}
 
+	/* Write the CRT registers a second time. This is a workaround:
+ 	   the mode will only lock when certain registers are written while
+ 	   certain other registers are already in place. In other words:
+	   the order of register writes does matter. Welcome to graphics
+	   driver programming 101. */
+	for (i = 0; i < NrCRTRegs; i++) {
+
+		MGAG_CRT_OUT8(mgag_io, mgag_mode->mgag.CRTC[i], i);
+	}
+
 	for (i = 0; i < NrECRTRegs; i++) {
 
 		MGAG_ECRT_OUT8(mgag_io, mgag_mode->mgag.ECRTC[i], i);

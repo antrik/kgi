@@ -61,7 +61,6 @@ void setmode(void)
 	(display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
 
 	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
-	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
 
 	display->mode = mode;
 }
@@ -333,7 +332,6 @@ kern_return_t kgi_set_mode(trivfs_protid_t io_object)
 			return EBUSY;
 
 		(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
-		(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);    /* doesn't lock on first attempt... known problem, unknown cause */
 
 		state->status = KGI_STATUS_SET;
 		display->mode = mode;
