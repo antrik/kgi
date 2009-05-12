@@ -4475,7 +4475,7 @@ void mgag_chipset_done(mgag_chipset_t *mgag, mgag_chipset_io_t *mgag_io,
   KRN_DEBUG(2, "restoring initial chipset state");
 
   for (i = 0; i < MGAG_ECRT_REGS; ++i)
-    mgag->ECRT[i] = MGAG_ECRT_IN8(mgag_io, i);
+    MGAG_ECRT_OUT8(mgag_io, mgag->ECRT[i], i);
 
   /* Calling the VGA-text driver restore procedure */
   vga_text_chipset_done(&(mgag->vga), &(mgag_io->vga), options);
