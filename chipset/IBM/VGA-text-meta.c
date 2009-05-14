@@ -97,6 +97,31 @@ kgi_error_t vga_text_chipset_init(vga_text_chipset_t *vga,
 
 	}
 
+	/* Save VGA memory. (Usually text framebuffer/font.) */
+	{
+		int plane;
+
+		mem_region_t vga_aperture = {
+			.base_virt = NULL,
+			.base_io = 0xa0000,
+			.size = 64 KB
+		};
+
+		mem_claim_region(&vga_aperture);
+
+		VGA_SEQ_OUT8(vga_io, VGA_SR04_256K_ACCESS | VGA_SR04_NO_ODDEVEN, 0x04);    /* linear addressing in selected plane */
+
+		VGA_GRC_OUT8(vga_io, 0, 0x05);    /* simple read from selected plane */
+		VGA_GRC_OUT8(vga_io, VGA_GR6_MAP_A0_64, 0x06);    /* 64k window (one plane); linear access (no odd/even) */
+
+		for (plane = 0; plane < 4; plane++) {
+			VGA_GRC_OUT8(vga_io, plane, 0x04);    /* select read plane */
+			memcpy(&vga->MEM[plane * 64 KB], vga_aperture.base_virt, 64 KB);
+		}
+
+		mem_free_region(&vga_aperture);
+	}
+
 	KRN_NOTICE("%s %s driver " KGIM_CHIPSET_DRIVER,
 		vga->chipset.vendor, vga->chipset.model);
 
@@ -107,6 +132,36 @@ void vga_text_chipset_done(vga_text_chipset_t *vga,
 	vga_text_chipset_io_t *vga_io, const kgim_options_t *options)
 {
 	kgi_u_t i;
+
+	/* Restore VGA memory. */
+	{
+		int plane;
+
+		mem_region_t vga_aperture = {
+			.base_virt = NULL,
+			.base_io = 0xa0000,
+			.size = 64 KB
+		};
+
+		mem_claim_region(&vga_aperture);
+
+		VGA_SEQ_OUT8(vga_io, VGA_SR04_256K_ACCESS | VGA_SR04_NO_ODDEVEN, 0x04);    /* linear addressing in selected plane */
+
+		VGA_GRC_OUT8(vga_io, VGA_GR5_WRITEMODE0, 0x05);    /* standard write mode */
+		VGA_GRC_OUT8(vga_io, VGA_GR6_MAP_A0_64, 0x06);    /* 64k window (one plane); linear access (no odd/even) */
+
+		/* these are most likely already in the right state -- but better make sure... */
+		VGA_GRC_OUT8(vga_io, 0, 0x01);    /* all data from host */
+		VGA_GRC_OUT8(vga_io, 0, 0x03);    /* use host data directly (no rotation or logical operations) */
+		VGA_GRC_OUT8(vga_io, 0xff, 0x08);    /* don't keep any bits unchanged */
+
+		for (plane = 0; plane < 4; plane++) {
+			VGA_SEQ_OUT8(vga_io, VGA_SR02_PLANE0 << plane, 0x02); /* select write plane */
+			memcpy(vga_aperture.base_virt, &vga->MEM[plane * 64 KB], 64 KB);
+		}
+
+		mem_free_region(&vga_aperture);
+	}
 
 	for (i = 0; i < VGA_SEQ_REGS; i++)
 		VGA_SEQ_OUT8(vga_io, vga->SEQ[i], i);

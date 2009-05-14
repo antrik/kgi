@@ -93,6 +93,7 @@ typedef struct
 	kgi_u8_t	CRT[VGA_CRT_REGS];
 	kgi_u8_t	GRC[VGA_GRC_REGS];
 	kgi_u8_t	ATC[VGA_ATC_REGS];
+	kgi_u8_t	MEM[256 KB];
 
 } vga_text_chipset_t;
 
