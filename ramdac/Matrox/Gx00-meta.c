@@ -290,7 +290,7 @@ kgi_error_t mgag_ramdac_init(mgag_ramdac_t *mgag, mgag_ramdac_io_t *mgag_io,
 	mgag->saved.xmiscctrl = MGAG_EDAC_IN8(mgag_io, XMISCCTRL);
 	mgag->saved.pixrdmsk = MGAG_DAC_IN8(mgag_io, PIXRDMSK);
 
-	MGAG_DAC_OUT8(mgag_io, 0, PALWTADD);
+	MGAG_DAC_OUT8(mgag_io, 0, PALRDADD);
 	MGAG_DAC_INS8(mgag_io, PALDATA, mgag->saved.clut, sizeof(mgag->saved.clut));
 
 	KRN_DEBUG(1, "original ramdac state and palette (%i bytes) saved",
