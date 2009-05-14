@@ -314,7 +314,7 @@ void mgag_ramdac_done(mgag_ramdac_t *mgag, mgag_ramdac_io_t *mgag_io,
 	KRN_DEBUG(1, "original ramdac state restored");
 
 	MGAG_DAC_OUT8(mgag_io, 0, PALWTADD);
-	MGAG_DAC_OUTS8(mgag_io, PALWTADD, mgag->saved.clut, sizeof(mgag->saved.clut));
+	MGAG_DAC_OUTS8(mgag_io, PALDATA, mgag->saved.clut, sizeof(mgag->saved.clut));
 	
 	KRN_DEBUG(1, "original ramdac palette restored (%i bytes)",
 		  sizeof(mgag->saved.clut));
