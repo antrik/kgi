@@ -309,6 +309,7 @@ void mgag_ramdac_done(mgag_ramdac_t *mgag, mgag_ramdac_io_t *mgag_io,
 	MGAG_EDAC_OUT8(mgag_io, mgag->saved.xzoom,    XZOOMCTRL);
 	MGAG_EDAC_OUT8(mgag_io, mgag->saved.xgenctrl, XGENCTRL);
 	MGAG_EDAC_OUT8(mgag_io, mgag->saved.xmulctrl, XMULCTRL);
+	MGAG_EDAC_OUT8(mgag_io, mgag->saved.xmiscctrl, XMISCCTRL);
 	MGAG_DAC_OUT8 (mgag_io, mgag->saved.pixrdmsk, PIXRDMSK);
 
 	KRN_DEBUG(1, "original ramdac state restored");
@@ -318,8 +319,6 @@ void mgag_ramdac_done(mgag_ramdac_t *mgag, mgag_ramdac_io_t *mgag_io,
 	
 	KRN_DEBUG(1, "original ramdac palette restored (%i bytes)",
 		  sizeof(mgag->saved.clut));
-
-	MGAG_EDAC_OUT8(mgag_io, mgag->saved.xmiscctrl, XMISCCTRL);
 
 	KRN_DEBUG(2, "completed");
 }
