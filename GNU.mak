@@ -21,8 +21,8 @@ core/core-mod.o: core/core.o core/kgiServer.o
 
 core/core.o: core/kgiServer.h $(kgi_h_includes) include/kgi/module.h include/kgi/modulelib.h system/$(SYSTEM)/hurd_video.h
 
-%Server.h %User.h %Server.c %User.c: %.defs %mutations.h
-	mig -imacros $*mutations.h -sheader $*Server.h -header $*User.h -server $*Server.c -user $*User.c $<
+%Server.h %User.h %Server.c %User.c: include/kgi/hurd/%.defs include/kgi/hurd/%mutations.h
+	mig -imacros $(filter %mutations.h,$^) -sheader $*Server.h -header $*User.h -server $*Server.c -user $*User.c $<
 
 OBJS+=rpctest.o
 CLEANFILES+=rpctest
