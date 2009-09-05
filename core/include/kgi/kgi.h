@@ -61,6 +61,8 @@
 #ifndef _kgi_kgi_h
 #define _kgi_kgi_h
 
+#include <kgi/config.h>
+
 #include <kgi/system.h>
 KGI_SYS_DECLARE_INTEGRAL_TYPES(kgi)
 
