@@ -19,19 +19,25 @@ static kgi_display_t *display=NULL;
 
 kgi_s_t kgi_register_display(kgi_display_t *dpy, kgi_u_t id)
 {
-	if(display)
-		error(3, 0, "Trying to register more than one display? Sorry, can't cope with that...");
-
 	fprintf(stderr, "kgi_register_display(dpy=%p, id=%i)\n", dpy, id);
-	display=dpy;
+
+	if(!display)
+		display=dpy;
+	else
+		error(0, 0, "Trying to register more than one display? Sorry, can't cope with that... I'll just ignore it.");
+		/* XXX should we return an error code in this case? */
+
 	return KGI_EOK;
 }
 
 void    kgi_unregister_display(kgi_display_t *dpy)
 {
 	fprintf(stderr, "kgi_unregister_display(dpy=%p)\n", dpy);
-	assert(dpy==display);    /* there should be only one, or otherwise we would have bailed on init... */
-	display=NULL;
+
+	if(dpy==display)
+		display=NULL;
+	else
+		fprintf(stderr, "Not the display I use -- ignoring.\n");
 }
 
 void setmode(void)
