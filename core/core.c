@@ -500,7 +500,8 @@ int main(int argc, char *argv[])
 	argp_parse(&kgi_argp, argc, argv, 0, NULL, NULL);
 
 	init_module();
-	assert(display);
+	if(!display)
+		error(3, 0, "No suitable display found... I'm bored, bye.");
 
 	task_get_bootstrap_port(mach_task_self(), &bootstrap);
 	if(bootstrap == MACH_PORT_NULL) {    /* not started as translator */
