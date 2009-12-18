@@ -221,6 +221,8 @@ mem_vaddr_t mem_claim_region(mem_region_t *r)
 
 mem_vaddr_t mem_free_region(mem_region_t *r)
 {
+	KRN_ASSERT(r->base_virt != NULL);
+
 	mmio_unmap(r->base_virt, r->size);
 	KRN_DEBUG(2, "mem_free_region %s, base_io %p, base_virt %p, "
 		"base_phys %p, base_bus %p", r->name, (void *) r->base_io,
