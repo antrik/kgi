@@ -209,7 +209,9 @@ void close_hook(struct trivfs_peropen *po)
 
 	fprintf(stderr, "KGI close()\n");
 
-	unset_mode(state);
+	if (state->status == KGI_STATUS_SET || state->status == KGI_STATUS_CHECKED)
+		unset_mode(state);
+
 	free(state);
 }
 
