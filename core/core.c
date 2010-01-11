@@ -43,6 +43,7 @@ void    kgi_unregister_display(kgi_display_t *dpy)
 void setmode(void)
 {
 	kgi_mode_t *mode;
+	kgi_error_t err;
 
 	mode=malloc(sizeof (kgi_mode_t));
 	if(!mode)
@@ -68,7 +69,9 @@ void setmode(void)
 	mode->img[0].virt.x = 640;
 	mode->img[0].virt.y = 480;
 
-	(display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
+	err=(display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
+	if(err)
+		error(4, 0, "setmode(): (display->CheckMode)() failed.");
 
 	(display->SetMode)(display, mode->img, mode->images, mode->dev_mode);
 
@@ -304,6 +307,8 @@ kern_return_t kgi_check_mode(trivfs_protid_t io_object)
 		struct po_state *const state = io_object->po->hook;
 		kgi_mode_t *const mode = &state->mode;
 
+		kgi_error_t err;
+
 		/* first things first... */
 		if (state->status != KGI_STATUS_NONE || !state->mode.images)
 			return EPROTO;
@@ -312,7 +317,11 @@ kern_return_t kgi_check_mode(trivfs_protid_t io_object)
 		if(!mode->dev_mode)
 			error_at_line(1, errno, __FILE__, __LINE__, "setmode()");
 
-		(display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
+		err = (display->CheckMode)(display, KGI_TC_PROPOSE, mode->img, mode->images, mode->dev_mode, mode->resource, __KGI_MAX_NR_RESOURCES);
+		if (err) {
+			free(mode->dev_mode);
+			return EINVAL;
+		}
 
 		state->status = KGI_STATUS_CHECKED;
 	}

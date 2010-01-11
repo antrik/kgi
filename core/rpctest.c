@@ -29,6 +29,42 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
+
+	/* first try (hopefully) impossible mode */
+
+	kgi_fd = open(argv[1], O_RDWR);
+	if (kgi_fd == -1)
+		error(2, errno, "Opening kgi node \"%s\" failed", argv[1]);
+
+	err = HURD_DPORT_USE(kgi_fd, kgi_set_images(port, 1));
+	if (err)
+		error(3, err, "kgi_set_images() failed");
+
+	memset(&mode, 0, sizeof mode);
+	mode.fam |= KGI_AM_COLORS;
+	mode.bpfa[0] = 5;
+	mode.bpfa[1] = 6;
+	mode.bpfa[2] = 5;
+	mode.bpfa[3] = 0;
+	mode.frames = 1;
+	mode.size.x = 23;
+	mode.size.y = 42;
+
+	err = HURD_DPORT_USE(kgi_fd, kgi_set_image_mode(port, 1, mode));
+	if (err)
+		error(3, err, "kgi_set_image_mode() failed");
+
+	err = HURD_DPORT_USE(kgi_fd, kgi_check_mode(port));
+	if (err != EINVAL)
+		error(3, err, "kgi_check_mode()");
+
+	err = close(kgi_fd);
+	if (err == -1)
+		error(2, errno, "Closing kgi node failed");
+
+
+	/* now for real... */
+
 	kgi_fd = open(argv[1], O_RDWR);
 	if (kgi_fd == -1)
 		error(2, errno, "Opening kgi node \"%s\" failed", argv[1]);
