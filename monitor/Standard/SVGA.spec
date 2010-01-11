@@ -9,7 +9,7 @@ Begin
 	Size(240, 180)
 	Type(KGIM_MT_ANALOG | KGIM_MT_RGB | KGIM_MT_CRT)
 	Sync(KGIM_ST_SYNC_NORMAL)
-	Bandwidth(25000000, 75500000)
+	Bandwidth(0, 75500000)
 	hFreq(0, 31100, 58000)
 	vFreq(0, 50, 75)
 End
