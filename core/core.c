@@ -254,6 +254,10 @@ kern_return_t kgi_set_image_mode(trivfs_protid_t io_object, int image, kgi_image
 	if (!(io_object->po->openmodes & O_WRITE))
 		return EBADF;
 
+	/* as we support only one image, there is not much choice... */
+	if (image != 0)
+		return EINVAL;
+
 	fprintf(stderr, "kgi_set_image_mode(%d, {flags=%d virt.x=%d virt.y=%d size.x=%d size.y=%d frames=%d fam=%d bpfa[0]=%d bpfa[1]=%d bpfa[2]=%d bpfa[3]=%d})\n", image, mode.flags, mode.virt.x, mode.virt.y, mode.size.x, mode.size.y, mode.frames, mode.fam, mode.bpfa[0], mode.bpfa[1], mode.bpfa[2], mode.bpfa[3]);
 
 	{
@@ -275,6 +279,10 @@ kern_return_t kgi_get_image_mode(trivfs_protid_t io_object, int image, kgi_image
 		return EOPNOTSUPP;
 	if (!(io_object->po->openmodes & O_READ))
 		return EBADF;
+
+	/* as we support only one image, there is not much choice... */
+	if (image != 0)
+		return EINVAL;
 
 	fprintf(stderr, "kgi_get_image_mode(%d)\n", image);
 
