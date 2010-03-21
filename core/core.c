@@ -481,6 +481,19 @@ kern_return_t trivfs_S_io_map(
 		if (state->status != KGI_STATUS_SET)
 			return EPROTO;
 
+		/*
+		 * Note: The requirement to have a mode set before calling this
+		 * RPC, means that we can't actually get here without
+		 * openmodes|O_WRITE; so strictly the handling of O_WRITE is
+		 * not necessary. It *is* however theoretically possible --
+		 * though strange -- to get here without O_READ; so we *do*
+		 * need the handling of this.
+		 *
+		 * To keep things simple, we just use the standard openmodes
+		 * handling (i.e. both O_READ and O_WRITE), even if strictly
+		 * speaking it's overkill.
+		 */
+
 		switch (state->mmap_mode) {
 			case KGI_MMAP_NONE:
 				return EPROTO;
