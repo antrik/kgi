@@ -267,7 +267,7 @@ kern_return_t kgi_set_image_mode(trivfs_protid_t io_object, int image, kgi_image
 		if (state->status != KGI_STATUS_NONE || !state->mode.images)
 			return EPROTO;
 
-		memcpy(&state->mode.img[0], &mode, sizeof mode);
+		memcpy(&state->mode.img[image], &mode, sizeof mode);
 	}
 
 	return 0;
